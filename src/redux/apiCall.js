@@ -1,18 +1,30 @@
 import { loginRequest, publicRequest } from "../requestMethod";
+import { loginFailure, loginFailure401, loginFailure500 } from "./errorSlice";
+import { loginFetch, loginSuccess } from "./loginSlice";
 import { registerFailure, registerStart, registerSuccess } from "./registerSlice";
-import { loginFailure, loginStart, loginSuccess } from "./userSlice"
+
 
 
 export const login = async (dispatch, user, navigate) =>{
-    dispatch(loginStart());
+    dispatch(loginFetch(true));
     try{
         const res = await loginRequest.post('/login', user) 
         dispatch(loginSuccess(res.data))
+        dispatch(loginFetch(false))
         navigate("/")
     } catch(err){
-        dispatch(loginFailure())
-        console.log("err", err)
-        return err
+        
+        if(err?.response?.status===500){
+            dispatch(loginFailure500())
+            loginFetch(false)
+        }else if(err?.response?.status===401){
+            dispatch(loginFailure401())
+            loginFetch(false)
+        } 
+        else{
+            dispatch(loginFailure())
+            loginFetch(false)
+        }
     }
 }
 

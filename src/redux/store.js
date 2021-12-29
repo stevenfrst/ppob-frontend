@@ -1,7 +1,6 @@
 import { combineReducers, configureStore } from "@reduxjs/toolkit";
-
 import storage from "redux-persist/lib/storage";
-import userSlice from "./userSlice";
+import loginSlice from "./loginSlice";
 import {
     persistStore,
     persistReducer,
@@ -13,12 +12,16 @@ import {
     REGISTER,
   } from "redux-persist";
 import registerSlice from "./registerSlice";
+import errorSlice from "./errorSlice";
+
+
 const persistConfig = {
     key:'root',
-    storage
+    storage,
+    blacklist:['error']
 }
 
-const rootReducer = combineReducers({user:userSlice, register:registerSlice})
+const rootReducer = combineReducers({login:loginSlice, register:registerSlice, error:errorSlice})
 const persistedReducer = persistReducer(persistConfig, rootReducer)
 
 export const store = configureStore({
