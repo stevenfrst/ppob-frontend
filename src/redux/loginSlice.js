@@ -12,9 +12,8 @@ const loginSlice = createSlice({
         },
         loginSuccess:(state, action) =>{
             state.currentUser = action.payload
-            state.error = false
+
         },
-       
        
     }
 })

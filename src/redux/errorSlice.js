@@ -3,22 +3,19 @@ import { createSlice } from "@reduxjs/toolkit";
 const errorSlice = createSlice({
     name:'error',
     initialState:{
-        loginError : false,
-        loginError500 :false,
-        loginError401:false
+        loginError : null,
+        registerError : null
+        
     },
     reducers:{
-        loginFailure:(state)=>{
-            state.loginError=true
+        loginFailure:(state, action)=>{
+            state.loginError= action.payload
         },
-        loginFailure500:(state)=>{
-            state.loginError500=true
-        },
-        loginFailure401:(state)=>{
-            state.loginError401=true
+        registerFailure:(state, action) =>{
+            state.registerError= action.payload
         }
     }
 })
 
-export const {loginFailure, loginFailure500, loginFailure401} = errorSlice.actions
+export const {loginFailure, registerFailure} = errorSlice.actions
 export default errorSlice.reducer

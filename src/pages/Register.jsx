@@ -1,24 +1,136 @@
+//mui
 import { Box, Link, Typography } from "@mui/material";
-
 import { styled } from "@mui/material/styles";
 import Button from "@mui/material/Button";
-
 import { yellow } from "@mui/material/colors";
 
+//react and redux
 import { useNavigate } from "react-router-dom";
-import { useState } from "react";
-import { useDispatch } from "react-redux";
+import { useEffect, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
+
+//call backend
 import { register } from "../redux/apiCall";
 
 const Register = () => {
-  const navigate = useNavigate();
+  
   const [data, setData] = useState({
     username: "",
     email: "",
     password: "",
     phone_number: "",
+    repassword: "",
   });
+  const [errMsg, setErrMsg] = useState({
+    username: "",
+    email: "",
+    password: "",
+    phone_number: "",
+    repassword: "",
+  });
+  const regexEmail = /^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.\w{2,3})+$/;
+  const regexPhone = /^(\+62|62|0)8[1-9][0-9]{6,9}$/;
+
   const dispatch = useDispatch();
+  const { registerError } = useSelector((state) => state.error);
+
+  
+  const handleChange = (e) => {
+    const name = e.target.name;
+    const value = e.target.value;
+
+    if (name === "username") {
+      if (!value) {
+        setErrMsg({ ...errMsg, [name]: "Username masih kosong" });
+      } else {
+        setErrMsg({ ...errMsg, [name]: "" });
+      }
+      setData({ ...data, [name]: value });
+    }
+
+    if (name === "email") {
+      if (!value) {
+        setErrMsg({ ...errMsg, [name]: "Email masih kosong" });
+      } else if (!regexEmail.test(value)) {
+        setErrMsg({ ...errMsg, [name]: "Format email salah" });
+      } else {
+        setErrMsg({ ...errMsg, [name]: "" });
+      }
+      setData({ ...data, [name]: value });
+    }
+    if (name === "phone_number") {
+      if (!value) {
+        setErrMsg({ ...errMsg, [name]: "Nomor HP masih kosong" });
+      } else if (!regexPhone.test(value)) {
+        setErrMsg({
+          ...errMsg,
+          [name]: "Nomor HP invalid",
+        });
+      } else {
+        setErrMsg({ ...errMsg, [name]: "" });
+      }
+      setData({ ...data, [name]: value });
+    }
+
+    if (name === "password") {
+      if (!value) {
+        setErrMsg({ ...errMsg, [name]: "Password masih kosong" });
+      } else {
+        setErrMsg({ ...errMsg, [name]: "" });
+      }
+      setData({ ...data, [name]: value });
+    }
+
+    if (name === "repassword") {
+      if (!value) {
+        setErrMsg({ ...errMsg, [name]: "Masukkan kembali password" });
+      } else if (value !== data.password) {
+        setErrMsg({ ...errMsg, [name]: "Password tidak sama" });
+      } else {
+        setErrMsg({ ...errMsg, [name]: "" });
+      }
+      setData({ ...data, [name]: value });
+    }
+  };
+
+   const navigate = useNavigate();
+
+  const handleClick = () => {
+    if (
+      !data.username &&
+      !data.phone_number &&
+      !data.email &&
+      !data.password &&
+      !data.repassword
+    ) {
+      setErrMsg({
+        ...errMsg,
+        username: "Username masih kosong",
+        phone_number: "Nomor HP masih kosong",
+        email: "Email masih kosong",
+        password: "Password masih kosong",
+        repassword: "Masukkan kembali password",
+      });
+    } else if (data.username === "") {
+      setErrMsg({ ...errMsg, username: "Usename masih kosong" });
+    } else if (data.phone_number === "") {
+      setErrMsg({ ...errMsg, phone_number: "Nomor HP masih kosong" });
+    } else if (data.email === "") {
+      setErrMsg({ ...errMsg, email: "Email masih kosong" });
+    } else if (data.password === "") {
+      setErrMsg({ ...errMsg, password: "Password masih kosong" });
+    } else if (data.repassword === "") {
+      setErrMsg({ ...errMsg, repassword: "Masukkan kembali password" });
+    } else if (
+      !errMsg.username &&
+      !errMsg.phone_number &&
+      !errMsg.email &&
+      !errMsg.password &&
+      !errMsg.repassword
+    ) {
+      register(dispatch, data, navigate);
+    }
+  };
 
   const ColorButton = styled(Button)(({ theme }) => ({
     color: "#113CFC",
@@ -32,22 +144,15 @@ const Register = () => {
       backgroundColor: yellow[700],
     },
   }));
-  const onChange = (event) => {
-    setData({ ...data, [event.target.name]: event.target.value });
-  };
-  const handleSubmit = (e) => {
-    if (data.username && data.email && data.password && data.phone_number) {
-      const newData = {
-        username: data.username,
-        email: data.email,
-        password: data.password,
-        phone_number: data.phone_number,
-      };
-      register(dispatch, newData, navigate);
-    } else {
-      e.preventDefault();
+
+  useEffect(() => {
+    if (registerError === "duplicate") {
+      setErrMsg({ ...errMsg, email: "Email sudah dipakai" });
+    } else if (registerError === "invalid email") {
+      setErrMsg({ ...errMsg, email: "Format email salah" });
     }
-  };
+  }, [registerError]);
+  
   return (
     <Box
       sx={(theme) => ({
@@ -74,7 +179,7 @@ const Register = () => {
           variant="body2"
           sx={{ color: "yellow", fontWeight: "bold" }}
         >
-          Error Message
+          {errMsg.username}
         </Typography>
         <input
           style={{
@@ -89,6 +194,7 @@ const Register = () => {
           name="username"
           value={data.username}
           placeholder="Username"
+          onChange={(e) => handleChange(e)}
         />
       </Box>
       <Box sx={{ textAlign: "right" }}>
@@ -96,7 +202,7 @@ const Register = () => {
           variant="body2"
           sx={{ color: "yellow", fontWeight: "bold" }}
         >
-          Error Message
+          {errMsg.phone_number}
         </Typography>
         <input
           style={{
@@ -111,6 +217,7 @@ const Register = () => {
           name="phone_number"
           value={data.phone_number}
           placeholder="Nomor Handphone"
+          onChange={(e) => handleChange(e)}
         />
       </Box>
       <Box sx={{ textAlign: "right" }}>
@@ -118,7 +225,7 @@ const Register = () => {
           variant="body2"
           sx={{ color: "yellow", fontWeight: "bold" }}
         >
-          Error Message
+          {errMsg.email}
         </Typography>
         <input
           style={{
@@ -133,6 +240,7 @@ const Register = () => {
           name="email"
           value={data.email}
           placeholder="Email"
+          onChange={(e) => handleChange(e)}
         />
       </Box>
       <Box sx={{ textAlign: "right" }}>
@@ -140,7 +248,7 @@ const Register = () => {
           variant="body2"
           sx={{ color: "yellow", fontWeight: "bold" }}
         >
-          Error Message
+          {errMsg.password}
         </Typography>
         <input
           style={{
@@ -155,6 +263,7 @@ const Register = () => {
           name="password"
           value={data.password}
           placeholder="Password"
+          onChange={(e) => handleChange(e)}
         />
       </Box>
       <Box sx={{ textAlign: "right" }}>
@@ -162,7 +271,7 @@ const Register = () => {
           variant="body2"
           sx={{ color: "yellow", fontWeight: "bold" }}
         >
-          Error Message
+          {errMsg.repassword}
         </Typography>
         <input
           style={{
@@ -174,12 +283,21 @@ const Register = () => {
             width: "300px",
           }}
           type="text"
-          name="username"
+          name="repassword"
+          value={data.repassword}
           placeholder="Ulangi Password"
+          onChange={(e) => handleChange(e)}
         />
       </Box>
 
-      <ColorButton onClick={(e) => handleSubmit(e)}>Register</ColorButton>
+      <ColorButton onClick={() => handleClick()}>Register</ColorButton>
+      <Typography sx={{ marginBottom: 1 }}>
+        {registerError === 500 ? (
+          "Terjadi kesalahan, silahkan coba lagi"
+        ) : (
+          <></>
+        )}
+      </Typography>
       <Typography>
         Sudah punya akun?{" "}
         <Link

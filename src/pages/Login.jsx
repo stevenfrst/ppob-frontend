@@ -4,16 +4,16 @@ import { styled } from "@mui/material/styles";
 import Button from "@mui/material/Button";
 import { yellow } from "@mui/material/colors";
 
-//react
+//react and redux
 import { Navigate, useNavigate } from "react-router-dom";
-import { useState } from "react";
-import { useSelector } from "react-redux";
-
-// import { login } from "../redux/apiCall";
+import { useEffect, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
 
 //check token
 import { TOKEN } from "../requestMethod";
-import { Password } from "@mui/icons-material";
+
+//call backend
+import { login } from "../redux/apiCall";
 
 const Login = () => {
   const [email, setEmail] = useState("");
@@ -21,11 +21,10 @@ const Login = () => {
   const [errMsg, setErrMsg] = useState({ email: "", password: "" });
   const regexEmail = /^[\w-.]+@([\w-]+\.)+[\w-]{2,4}$/;
 
-  // const dispatch = useDispatch();
+  const dispatch = useDispatch();
   const { isfetching } = useSelector((state) => state.login);
-  const { loginError, loginError500, loginError401 } = useSelector(
-    (state) => state.error
-  );
+  const { loginError } = useSelector((state) => state.error);
+
   const bodyForm = new FormData();
 
   const navigate = useNavigate();
@@ -47,7 +46,7 @@ const Login = () => {
 
     if (name === "password") {
       if (!value) {
-        setErrMsg({ ...errMsg, [name]: "password masih kosong" });
+        setErrMsg({ ...errMsg, [name]: "Password masih kosong" });
       } else {
         setErrMsg({ ...errMsg, [name]: "" });
       }
@@ -56,25 +55,23 @@ const Login = () => {
   };
 
   const handleClick = () => {
-    if (errMsg.email !== "" || errMsg.password !== "") {
+    if (email === "" && password === "") {
+      setErrMsg({
+        ...errMsg,
+        email: "Email masih kosong",
+        password: "Password masih kosong",
+      });
+    } else if (email === "") {
+      setErrMsg({ ...errMsg, email: "Email masih kosong" });
+    } else if (password === "") {
+      setErrMsg({ ...errMsg, password: "Password masih kosong" });
+    } else if (!errMsg.password && !errMsg.email) {
       bodyForm.append("email", email);
       bodyForm.append("password", password);
-      // login(dispatch, bodyForm, navigate);
-    } else {
-      if (email === "" && password === "") {
-        setErrMsg({
-          ...errMsg,
-          email: "email masih kosong",
-          password: "password masih kosong",
-        });
-      } else if (email === "") {
-        setErrMsg({ ...errMsg, email: "email masih kosong" });
-      } else {
-        setErrMsg({ ...errMsg, password: "password masih kosong" });
-      }
+      login(dispatch, bodyForm, navigate);
     }
   };
-  
+
   const ColorButton = styled(Button)(({ theme }) => ({
     color: "#113CFC",
     fontWeight: "bold",
@@ -87,6 +84,16 @@ const Login = () => {
       backgroundColor: yellow[700],
     },
   }));
+
+  useEffect(() => {
+    if (loginError === "204") {
+      setErrMsg({ ...errMsg, email: "Email belum terdaftar" });
+    } else if (loginError === "401") {
+      setErrMsg({ ...errMsg, password: "Password salah" });
+    } else if (loginError === "400") {
+      setErrMsg({ ...setErrMsg, email: "Format email salah" });
+    }
+  }, [loginError]);
 
   if (TOKEN) {
     return <Navigate to="/" />;
@@ -162,7 +169,16 @@ const Login = () => {
         />
       </Box>
 
-      <ColorButton onClick={() => handleClick()}>Login</ColorButton>
+      <ColorButton disabled={isfetching} onClick={() => handleClick()}>
+        Login
+      </ColorButton>
+      <Typography sx={{ marginBottom: 1 }}>
+        {loginError === "unkown" ? (
+          "Terjadi kesalahan, silahkan coba lagi"
+        ) : (
+          <></>
+        )}
+      </Typography>
       <Typography>
         Belum punya akun?{" "}
         <Link

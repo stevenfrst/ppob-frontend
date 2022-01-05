@@ -9,7 +9,7 @@ const Header = () => {
   return (
     <>
       <AppBar
-        sx={(theme) => ({ backgroundColor: "#113CFC", position: "fixed" })}
+        sx={(theme) => ({ backgroundColor: "white", position: "fixed" })}
       >
         <Toolbar sx={{ display: "flex", justifyContent: "center" }}>
           <Box
@@ -22,10 +22,14 @@ const Header = () => {
               },
             })}
           >
-            <Typography variant="h5">Hello</Typography>
+            <Box><img
+            src="./assets/component2.png"
+            alt="phone logo"
+            width="120px"
+          /></Box>
 
             <IconButton sx={{ marginLeft: "auto", color: "white" }}>
-              <Link to="login" style={{ color: "#FFF" }}>
+              <Link to="login" style={{ color: "black" }}>
                 <Login />
               </Link>
             </IconButton>

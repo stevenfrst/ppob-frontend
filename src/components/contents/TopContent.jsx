@@ -13,19 +13,34 @@ const TopContent = () => {
   };
   console.log("type", type);
   return (
-    <div>
+    <Box sx={{ display:'flex', flexDirection:'column', justifyContent:'center', alignItems:'center'}}>
       <Box
         sx={(theme) => ({
           width: 450,
+          borderRadius:3,
           backgroundColor: "#113CFC",
-          paddingTop: 10,
-          margin: "auto",
+          paddingTop: 3,
+          marginTop:10,
           display: "flex",
+          paddingBottom:3,
           [theme.breakpoints.down("sm")]: {
             width: "100vw",
           },
         })}
       >
+        
+        <Box
+          sx={{
+            width: 225,
+            height: 200,
+            color: "white",
+            display: "flex",
+            alignItems: "center",
+            paddingLeft: 1,
+          }}
+        >
+          <Typography variant="h4" sx={{fontWeight:'500', textAlign:'right'}}>Beli Voucher Jadi Mudah <br/> & <br/>Aman</Typography>
+        </Box>
         <Box
           sx={{
             width: 200,
@@ -36,47 +51,20 @@ const TopContent = () => {
           }}
         >
           <img
-            src="./assets/undraw_app_data_re_vg5c.svg"
+            src="./assets/undraw_credit_card_re_blml 1.svg"
             alt="phone logo"
             width="180px"
           />
         </Box>
-        <Box
-          sx={{
-            width: 200,
-            height: 200,
-            color: "white",
-            display: "flex",
-            alignItems: "center",
-            paddingLeft: 1,
-          }}
-        >
-          <Typography variant="h4">Beli ini itu harus mudah</Typography>
-        </Box>
       </Box>
-      <Box
-        sx={(theme) => ({
-          backgroundColor: "#113CFC",
-          width: 450,
-          margin: "auto",
-          textAlign: "center",
-          color: "white",
-          [theme.breakpoints.down("sm")]: {
-            width: "100vw",
-          },
-        })}
-      >
-        <Typography variant="body">Beli</Typography>
-      </Box>
+      
       <Box
         sx={(theme) => ({
           width: 450,
-          backgroundColor: "#113CFC",
           paddingTop: 3,
           margin: "auto",
           display: "flex",
           justifyContent: "center",
-          paddingBottom: 5,
           [theme.breakpoints.down("sm")]: {
             width: "100vw",
           },
@@ -84,16 +72,16 @@ const TopContent = () => {
       >
         <CardActionArea
           sx={{
-            width: 100,
-            height: 100,
-            backgroundColor: "white",
-            marginRight: 1,
+            width: 140,
+            height: 140,
+            backgroundColor: "#113CFC",
+            marginRight: 2,
             borderRadius: 3,
             display: "block",
           }}
           onClick={() => handleOpen("Pulsa")}
         >
-          <Box sx={{ display: "flex", justifyContent: "center" }}>
+          <Box sx={{ display: "flex", justifyContent: "center", color:'white' }}>
             <PhoneInTalk
               sx={{
                 width: 50,
@@ -103,21 +91,21 @@ const TopContent = () => {
               }}
             />
           </Box>
-          <Box sx={{ display: "flex", justifyContent: "center" }}>
+          <Box sx={{ display: "flex", justifyContent: "center", color:'white' }}>
             <Typography>Pulsa</Typography>
           </Box>
         </CardActionArea>
         <CardActionArea
           sx={{
-            width: 100,
-            height: 100,
-            backgroundColor: "white",
-            marginRight: 1,
+            width: 140,
+            height: 140,
+            backgroundColor: "#113CFC",
+            marginRight: 2,
             borderRadius: 3,
           }}
           onClick={() => handleOpen("Voucher")}
         >
-          <Box sx={{ display: "flex", justifyContent: "center" }}>
+          <Box sx={{ display: "flex", justifyContent: "center", color:'white' }}>
             <ConfirmationNumber
               sx={{
                 width: 50,
@@ -127,21 +115,21 @@ const TopContent = () => {
               }}
             />
           </Box>
-          <Box sx={{ display: "flex", justifyContent: "center" }}>
+          <Box sx={{ display: "flex", justifyContent: "center", color:'white' }}>
             <Typography>Voucher</Typography>
           </Box>
         </CardActionArea>
         <CardActionArea
           sx={{
-            width: 100,
-            height: 100,
-            backgroundColor: "white",
+            width: 140,
+            height: 140,
+            backgroundColor: "#113CFC",
 
             borderRadius: 3,
           }}
           onClick={() => handleOpen("Listrik")}
         >
-          <Box sx={{ display: "flex", justifyContent: "center" }}>
+          <Box sx={{ display: "flex", justifyContent: "center", color:'white' }}>
             <FlashOn
               sx={{
                 width: 50,
@@ -151,13 +139,13 @@ const TopContent = () => {
               }}
             />
           </Box>
-          <Box sx={{ display: "flex", justifyContent: "center" }}>
+          <Box sx={{ display: "flex", justifyContent: "center", color:'white' }}>
             <Typography>Listrik</Typography>
           </Box>
         </CardActionArea>
       </Box>
       {openInput ? <NumberInput type={type} /> : <div></div>}
-    </div>
+    </Box>
   );
 };
 
