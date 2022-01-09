@@ -87,11 +87,11 @@ const Login = () => {
 
   useEffect(() => {
     if (loginError === "204") {
-      setErrMsg({ ...errMsg, email: "Email belum terdaftar" });
+      setErrMsg(e=>{return { ...e, email: "Email belum terdaftar" }});
     } else if (loginError === "401") {
-      setErrMsg({ ...errMsg, password: "Password salah" });
+      setErrMsg(e=>{return{ ...e, password: "Password salah" }});
     } else if (loginError === "400") {
-      setErrMsg({ ...setErrMsg, email: "Format email salah" });
+      setErrMsg(e=>{return{ ...e, email: "Format email salah" }});
     }
   }, [loginError]);
 

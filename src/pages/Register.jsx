@@ -147,9 +147,9 @@ const Register = () => {
 
   useEffect(() => {
     if (registerError === "duplicate") {
-      setErrMsg({ ...errMsg, email: "Email sudah dipakai" });
+      setErrMsg(e=>{return{ ...e, email: "Email sudah dipakai" }});
     } else if (registerError === "invalid email") {
-      setErrMsg({ ...errMsg, email: "Format email salah" });
+      setErrMsg(e=>{return{ ...e, email: "Format email salah" }});
     }
   }, [registerError]);
   

@@ -1,11 +1,11 @@
 import { IconButton, Toolbar } from "@mui/material";
 import AppBar from "@mui/material/AppBar";
-import { Login } from "@mui/icons-material";
+import { ArrowBack, Login } from "@mui/icons-material";
 import { Box } from "@mui/material";
 import { Link } from "react-router-dom";
 
 import React from "react";
-const Header = () => {
+const Header2 = () => {
   return (
     <>
       <AppBar
@@ -22,11 +22,9 @@ const Header = () => {
               },
             })}
           >
-            <Box><img
-            src="./assets/component2.png"
-            alt="phone logo"
-            width="120px"
-          /></Box>
+            <Box sx={{color:'black'}}>
+                <ArrowBack/>
+            </Box>
 
             <IconButton sx={{ marginLeft: "auto", color: "white" }}>
               <Link to="login" style={{ color: "black" }}>
@@ -40,4 +38,4 @@ const Header = () => {
   );
 };
 
-export default Header;
+export default Header2;

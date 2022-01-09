@@ -1,12 +1,11 @@
 import BottomContent from "./contents/BottomContent";
-import MidContent from "./contents/MidContent";
 import TopContent from "./contents/TopContent";
 
-const Content = () => {
+const Content = (props) => {
+  const {isHome} = props
   return (
     <div>
-      <TopContent />
-      <MidContent />
+      <TopContent isHome={isHome}/>
       <BottomContent />
     </div>
   );

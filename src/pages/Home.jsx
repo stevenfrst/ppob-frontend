@@ -1,14 +1,14 @@
 import Header from "../components/Header";
-import Bottombar from "../components/Bottombar";
 import Content from "../components/Content";
+import NewBottombar from "../components/NewBottombar";
 
 
 const Home = () => {
   return (
     <div>
       <Header></Header>
-      <Content></Content>
-      <Bottombar></Bottombar>
+      <Content isHome={true}></Content>
+      <NewBottombar></NewBottombar>
     </div>
   );
 };

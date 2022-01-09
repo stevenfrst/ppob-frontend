@@ -1,18 +1,11 @@
-import { Box, Typography, CardActionArea } from "@mui/material";
-import { useState } from "react";
+import { Box, Typography } from "@mui/material";
 
-import NumberInput from "./NumberInput";
-import { ConfirmationNumber, FlashOn, PhoneInTalk } from "@mui/icons-material";
+import BuyCard from "./BuyCard";
 
-const TopContent = () => {
-  const [openInput, setOpenInput] = useState(false);
-  const [type, setType] = useState("");
-  const handleOpen = (type) => {
-    setOpenInput(true);
-    setType(type);
-  };
-  console.log("type", type);
+const TopContent = (props) => {
+  const {isHome} = props
   return (
+    <Box>
     <Box sx={{ display:'flex', flexDirection:'column', justifyContent:'center', alignItems:'center'}}>
       <Box
         sx={(theme) => ({
@@ -58,93 +51,8 @@ const TopContent = () => {
         </Box>
       </Box>
       
-      <Box
-        sx={(theme) => ({
-          width: 450,
-          paddingTop: 3,
-          margin: "auto",
-          display: "flex",
-          justifyContent: "center",
-          [theme.breakpoints.down("sm")]: {
-            width: "100vw",
-          },
-        })}
-      >
-        <CardActionArea
-          sx={{
-            width: 140,
-            height: 140,
-            backgroundColor: "#113CFC",
-            marginRight: 2,
-            borderRadius: 3,
-            display: "block",
-          }}
-          onClick={() => handleOpen("Pulsa")}
-        >
-          <Box sx={{ display: "flex", justifyContent: "center", color:'white' }}>
-            <PhoneInTalk
-              sx={{
-                width: 50,
-                height: 50,
-                display: "flex",
-                justifyContent: "center",
-              }}
-            />
-          </Box>
-          <Box sx={{ display: "flex", justifyContent: "center", color:'white' }}>
-            <Typography>Pulsa</Typography>
-          </Box>
-        </CardActionArea>
-        <CardActionArea
-          sx={{
-            width: 140,
-            height: 140,
-            backgroundColor: "#113CFC",
-            marginRight: 2,
-            borderRadius: 3,
-          }}
-          onClick={() => handleOpen("Voucher")}
-        >
-          <Box sx={{ display: "flex", justifyContent: "center", color:'white' }}>
-            <ConfirmationNumber
-              sx={{
-                width: 50,
-                height: 50,
-                display: "flex",
-                justifyContent: "center",
-              }}
-            />
-          </Box>
-          <Box sx={{ display: "flex", justifyContent: "center", color:'white' }}>
-            <Typography>Voucher</Typography>
-          </Box>
-        </CardActionArea>
-        <CardActionArea
-          sx={{
-            width: 140,
-            height: 140,
-            backgroundColor: "#113CFC",
-
-            borderRadius: 3,
-          }}
-          onClick={() => handleOpen("Listrik")}
-        >
-          <Box sx={{ display: "flex", justifyContent: "center", color:'white' }}>
-            <FlashOn
-              sx={{
-                width: 50,
-                height: 50,
-                display: "flex",
-                justifyContent: "center",
-              }}
-            />
-          </Box>
-          <Box sx={{ display: "flex", justifyContent: "center", color:'white' }}>
-            <Typography>Listrik</Typography>
-          </Box>
-        </CardActionArea>
-      </Box>
-      {openInput ? <NumberInput type={type} /> : <div></div>}
+    <BuyCard isHome={isHome}></BuyCard>
+    </Box>
     </Box>
   );
 };

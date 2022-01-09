@@ -20,13 +20,15 @@ export const login = async (dispatch, user, navigate) => {
     
     if (err?.response?.status === 401) {
       dispatch(loginFailure("401"));
-      loginFetch(false);
+      dispatch(loginFetch(false))
     } else if (err?.response?.status === 400) {
       dispatch(loginFailure("400"));
-      loginFetch(false);
+      dispatch(loginFetch(false))
+
     } else {
       dispatch(loginFailure("unkown"));
-      loginFetch(false);
+      dispatch(loginFetch(false))
+
     }
   }
 };
