@@ -10,10 +10,9 @@ import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 
 //call backend
-import { register } from "../redux/apiCall";
+import { register } from "../../redux/apiCall";
 
 const Register = () => {
-  
   const [data, setData] = useState({
     username: "",
     email: "",
@@ -34,7 +33,6 @@ const Register = () => {
   const dispatch = useDispatch();
   const { registerError } = useSelector((state) => state.error);
 
-  
   const handleChange = (e) => {
     const name = e.target.name;
     const value = e.target.value;
@@ -93,7 +91,7 @@ const Register = () => {
     }
   };
 
-   const navigate = useNavigate();
+  const navigate = useNavigate();
 
   const handleClick = () => {
     if (
@@ -147,12 +145,16 @@ const Register = () => {
 
   useEffect(() => {
     if (registerError === "duplicate") {
-      setErrMsg(e=>{return{ ...e, email: "Email sudah dipakai" }});
+      setErrMsg((e) => {
+        return { ...e, email: "Email sudah dipakai" };
+      });
     } else if (registerError === "invalid email") {
-      setErrMsg(e=>{return{ ...e, email: "Format email salah" }});
+      setErrMsg((e) => {
+        return { ...e, email: "Format email salah" };
+      });
     }
   }, [registerError]);
-  
+
   return (
     <Box
       sx={(theme) => ({

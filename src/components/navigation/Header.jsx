@@ -8,25 +8,22 @@ import React from "react";
 const Header = () => {
   return (
     <>
-      <AppBar
-        sx={(theme) => ({ backgroundColor: "white", position: "fixed" })}
-      >
+      <AppBar sx={{ backgroundColor: "white", position: "fixed" }}>
         <Toolbar sx={{ display: "flex", justifyContent: "center" }}>
           <Box
-            sx={(theme) => ({
+            sx={{
               display: "flex",
               alignItems: "center",
               width: 450,
-              [theme.breakpoints.down("sm")]: {
-                width: "100vw",
-              },
-            })}
+            }}
           >
-            <Box><img
-            src="./assets/component2.png"
-            alt="phone logo"
-            width="120px"
-          /></Box>
+            <Box>
+              <img
+                src="./assets/component2.png"
+                alt="phone logo"
+                width="120px"
+              />
+            </Box>
 
             <IconButton sx={{ marginLeft: "auto", color: "white" }}>
               <Link to="login" style={{ color: "black" }}>

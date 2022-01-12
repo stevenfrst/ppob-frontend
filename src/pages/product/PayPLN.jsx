@@ -1,6 +1,7 @@
-import { Box, Button, CardActionArea, styled, Typography } from "@mui/material";
-import BuyCard from "../components/contents/BuyCard";
-import Header2 from "../components/Header2";
+import { Box, CardActionArea, Typography } from "@mui/material";
+import CategoryCard from "../../components/card/CategoryCard";
+import Header2 from "../../components/navigation/Header2";
+import Text from "../../components/typography/Text";
 
 const PayPLN = () => {
   return (
@@ -16,37 +17,20 @@ const PayPLN = () => {
           marginTop: 10,
         }}
       >
-        <BuyCard isHome={false}></BuyCard>
+        <CategoryCard isHome={false}></CategoryCard>
       </Box>
       <Box
-        sx={(theme) => ({
+        sx={{
           width: 450,
           height: 300,
           margin: "auto",
           backgroundColor: "white",
           marginTop: 2,
           display: "block",
-          [theme.breakpoints.down("sm")]: {
-            width: "100vw",
-          },
-        })}
+        }}
       >
-        <Box sx={{ paddingTop: 2, color: "white" }}>
-          <Box
-            component="span"
-            sx={{
-              border: 1,
-              borderColor: "#113CFC",
-              padding: 0.5,
-              borderStyle: "solid",
-              backgroundColor: "#113CFC",
-              color: "white",
-              borderRadius: 2,
-              fontWeight: "bold",
-            }}
-          >
-            Informasi Tagihan
-          </Box>
+        <Box sx={{ marginTop: 3 }}>
+          <Text text="Informasi Tagihan" />
         </Box>
         <Box sx={{ marginTop: 3 }}>
           <Typography>Nama Pelanggan</Typography>

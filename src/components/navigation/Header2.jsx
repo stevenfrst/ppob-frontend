@@ -8,22 +8,17 @@ import React from "react";
 const Header2 = () => {
   return (
     <>
-      <AppBar
-        sx={(theme) => ({ backgroundColor: "white", position: "fixed" })}
-      >
+      <AppBar sx={{ backgroundColor: "white", position: "fixed" }}>
         <Toolbar sx={{ display: "flex", justifyContent: "center" }}>
           <Box
-            sx={(theme) => ({
+            sx={{
               display: "flex",
               alignItems: "center",
               width: 450,
-              [theme.breakpoints.down("sm")]: {
-                width: "100vw",
-              },
-            })}
+            }}
           >
-            <Box sx={{color:'black'}}>
-                <ArrowBack/>
+            <Box sx={{ color: "black" }}>
+              <ArrowBack />
             </Box>
 
             <IconButton sx={{ marginLeft: "auto", color: "white" }}>

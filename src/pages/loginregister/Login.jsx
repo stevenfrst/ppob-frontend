@@ -10,10 +10,10 @@ import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 
 //check token
-import { TOKEN } from "../requestMethod";
+import { TOKEN } from "../../requestMethod";
 
 //call backend
-import { login } from "../redux/apiCall";
+import { login } from "../../redux/apiCall";
 
 const Login = () => {
   const [email, setEmail] = useState("");
@@ -87,11 +87,17 @@ const Login = () => {
 
   useEffect(() => {
     if (loginError === "204") {
-      setErrMsg(e=>{return { ...e, email: "Email belum terdaftar" }});
+      setErrMsg((e) => {
+        return { ...e, email: "Email belum terdaftar" };
+      });
     } else if (loginError === "401") {
-      setErrMsg(e=>{return{ ...e, password: "Password salah" }});
+      setErrMsg((e) => {
+        return { ...e, password: "Password salah" };
+      });
     } else if (loginError === "400") {
-      setErrMsg(e=>{return{ ...e, email: "Format email salah" }});
+      setErrMsg((e) => {
+        return { ...e, email: "Format email salah" };
+      });
     }
   }, [loginError]);
 
