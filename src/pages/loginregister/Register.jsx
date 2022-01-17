@@ -10,7 +10,7 @@ import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 
 //call backend
-import { register } from "../../redux/apiCall";
+import { register } from "../../redux/loginRegisterApi";
 
 const Register = () => {
   const [data, setData] = useState({
@@ -28,7 +28,7 @@ const Register = () => {
     repassword: "",
   });
   const regexEmail = /^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.\w{2,3})+$/;
-  const regexPhone = /^(\+62|62|0)8[1-9][0-9]{6,9}$/;
+  const regexPhone = /^08[1-9][0-9]{6,9}$/;
 
   const dispatch = useDispatch();
   const { registerError } = useSelector((state) => state.error);
@@ -62,7 +62,7 @@ const Register = () => {
       } else if (!regexPhone.test(value)) {
         setErrMsg({
           ...errMsg,
-          [name]: "Nomor HP invalid",
+          [name]: "Gunakan Format 08xxxx",
         });
       } else {
         setErrMsg({ ...errMsg, [name]: "" });

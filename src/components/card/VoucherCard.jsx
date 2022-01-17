@@ -1,6 +1,17 @@
 import { Avatar, Box, CardActionArea, Typography } from "@mui/material";
+import { useDispatch } from "react-redux";
+import { useNavigate } from "react-router-dom";
+import { setSelectedVoucher } from "../../redux/userLogSlice";
 
-const VoucherCard = () => {
+
+const VoucherCard = (props) => {
+  const {listProduct} = props
+  const navigate = useNavigate()
+  const dispatch = useDispatch()
+  const handleClick = (product) =>{
+    dispatch(setSelectedVoucher(product))
+    navigate("/buyvoucher/selectvoucher")
+  }
   return (
     <Box
       sx={{
@@ -12,7 +23,6 @@ const VoucherCard = () => {
     >
       <CardActionArea
         sx={{
-          width: 180,
           borderStyle: "solid",
           borderColor: "#113CFC",
           borderRadius: 3,
@@ -21,17 +31,18 @@ const VoucherCard = () => {
           justifyContent: "center",
           flexDirection: "column",
         }}
+        onClick={()=>handleClick(listProduct)}
       >
         <Box>
           <Avatar
-            alt="xl.png"
-            src="./assets/pagisore.png"
+            alt={listProduct?.sub_category}
+            src={listProduct?.link}
             sx={{ width: 50, height: 50 }}
           ></Avatar>
         </Box>
         <Box>
           <Typography variant="h6" sx={{ fontWeight: "bold" }}>
-            Pagi Sore
+            {listProduct?.sub_category}
           </Typography>
         </Box>
       </CardActionArea>

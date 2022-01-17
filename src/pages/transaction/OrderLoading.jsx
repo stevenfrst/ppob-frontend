@@ -5,13 +5,13 @@ const OrderLoading = () => {
     <Box
       sx={{
         width: 450,
-
         margin: "auto",
         color: "#3F3D56",
         textAlign: "center",
         height: "100vh",
         display: "flex",
         alignItems: "center",
+        flexDirection:"column",
         justifyContent: "center",
       }}
     >

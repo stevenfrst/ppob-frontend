@@ -13,15 +13,19 @@ import {
   } from "redux-persist";
 import registerSlice from "./registerSlice";
 import errorSlice from "./errorSlice";
+import productSlice from "./productSlice";
+import userSlice from "./userSlice";
+import userLogSlice from "./userLogSlice";
+import transactionSlice from "./transactionSlice";
 
 
 const persistConfig = {
     key:'root',
     storage,
-    blacklist:['error']
+    blacklist:['error', 'product']
 }
 
-const rootReducer = combineReducers({login:loginSlice, register:registerSlice, error:errorSlice})
+const rootReducer = combineReducers({login:loginSlice, register:registerSlice, product:productSlice, user:userSlice, userLog:userLogSlice, transaction:transactionSlice, error:errorSlice})
 const persistedReducer = persistReducer(persistConfig, rootReducer)
 
 export const store = configureStore({

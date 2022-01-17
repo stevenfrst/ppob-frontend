@@ -1,15 +1,58 @@
-import { Box, CardActionArea, Typography } from "@mui/material";
+import { Alert, Box, CardActionArea, Snackbar, Typography } from "@mui/material";
 import Radio from "@mui/material/Radio";
 import { useState } from "react";
+import { Navigate, useNavigate } from "react-router-dom";
 import OrderIdCard from "../../components/card/OrderIdCard";
 import Header2 from "../../components/navigation/Header2";
 import Text from "../../components/typography/Text";
+import { useDispatch, useSelector } from "react-redux";
+import {createTransaction} from "../../redux/transactionApi"
+import { setOrderIDPayment } from "../../redux/userLogSlice";
 const ChoosePayment = () => {
-  const [selectedValue, setSelectedValue] = useState("a");
-
+  const [selectedValue, setSelectedValue] = useState("");
+  const {selectedProduct} = useSelector((state)=>state.userLog)
+  const dispatch = useDispatch()
+  function numberWithCommas(x) {
+    return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".");
+  }
+  let totalPrice = numberWithCommas(selectedProduct?.price + selectedProduct?.tax);
   const handleChange = (event) => {
     setSelectedValue(event.target.value);
   };
+  const {currentUser} = useSelector((state)=>state.login)
+  const {orderID} = useSelector((state)=>state.userLog)
+  const [openSnackBar, setOpenSnackBar]= useState(false)
+ 
+  const data = {
+    product_id:selectedProduct?.id,
+    discount:0,
+    tax:selectedProduct?.tax,
+    subtotal:selectedProduct?.price,
+    bank: selectedValue,
+    order_id:parseInt(orderID)
+  }
+  
+  const navigate = useNavigate()
+  if (!currentUser) {
+    return <Navigate to="/" />;
+  }
+ 
+  const handlePayment = ()=>{
+    if(selectedValue){
+      dispatch(setOrderIDPayment(orderID))
+      createTransaction(dispatch, data, navigate  )
+    } else {
+      setOpenSnackBar(true)
+    } 
+  }
+  const handleClose = (event, reason) => {
+    if (reason === 'clickaway') {
+      return;
+    }
+
+    setOpenSnackBar(false);
+  };
+  
   return (
     <Box>
       <Header2></Header2>
@@ -55,7 +98,7 @@ const ChoosePayment = () => {
                 sx={{
                   width: "45px",
                   height: "45px",
-                  background: "url(./assets/bca.png)",
+                  background: "url(./assets/bca.svg)",
                   borderRadius: 3,
                   backgroundRepeat: "no-repeat",
                   backgroundPosition: "center",
@@ -69,11 +112,11 @@ const ChoosePayment = () => {
               </Box>
               <Box sx={{ marginLeft: "auto" }}>
                 <Radio
-                  checked={selectedValue === "a"}
+                  checked={selectedValue === "bca"}
                   onChange={handleChange}
-                  value="a"
+                  value="bca"
                   name="radio-buttons"
-                  inputProps={{ "aria-label": "A" }}
+                  inputProps={{ "aria-label": "bca" }}
                   sx={{
                     color: "black",
                     "&.Mui-checked": {
@@ -101,7 +144,7 @@ const ChoosePayment = () => {
                 sx={{
                   width: "45px",
                   height: "45px",
-                  background: "url(./assets/bca.png)",
+                  background: "url(./assets/bni.svg)",
                   borderRadius: 3,
                   backgroundRepeat: "no-repeat",
                   backgroundPosition: "center",
@@ -111,15 +154,15 @@ const ChoosePayment = () => {
                 }}
               ></Box>
               <Box>
-                <Typography variant="h6">Virtual Account BCA</Typography>
+                <Typography variant="h6">Virtual Account BNI</Typography>
               </Box>
               <Box sx={{ marginLeft: "auto" }}>
                 <Radio
-                  checked={selectedValue === "b"}
+                  checked={selectedValue === "bni"}
                   onChange={handleChange}
-                  value="b"
+                  value="bni"
                   name="radio-buttons"
-                  inputProps={{ "aria-label": "B" }}
+                  inputProps={{ "aria-label": "bni" }}
                   sx={{
                     color: "black",
                     "&.Mui-checked": {
@@ -147,7 +190,7 @@ const ChoosePayment = () => {
                 sx={{
                   width: "45px",
                   height: "45px",
-                  background: "url(./assets/bca.png)",
+                  background: "url(./assets/permata.png)",
                   borderRadius: 3,
                   backgroundRepeat: "no-repeat",
                   backgroundPosition: "center",
@@ -157,61 +200,15 @@ const ChoosePayment = () => {
                 }}
               ></Box>
               <Box>
-                <Typography variant="h6">Virtual Account BCA</Typography>
+                <Typography variant="h6">Virtual Account Permata</Typography>
               </Box>
               <Box sx={{ marginLeft: "auto" }}>
                 <Radio
-                  checked={selectedValue === "b"}
+                  checked={selectedValue === "permata"}
                   onChange={handleChange}
-                  value="b"
+                  value="permata"
                   name="radio-buttons"
-                  inputProps={{ "aria-label": "B" }}
-                  sx={{
-                    color: "black",
-                    "&.Mui-checked": {
-                      color: "black",
-                    },
-                  }}
-                />
-              </Box>
-            </Box>
-          </Box>
-          <Box
-            sx={{
-              display: "flex",
-              flexDirection: "column",
-              marginTop: 3,
-              width: 450,
-              borderBottom: 1,
-              borderColor: "rgba(0,0,0,30%)",
-              paddingBottom: 2,
-            }}
-          >
-            <Box sx={{ display: "flex", alignItems: "center" }}>
-              <Box></Box>
-              <Box
-                sx={{
-                  width: "45px",
-                  height: "45px",
-                  background: "url(./assets/bca.png)",
-                  borderRadius: 3,
-                  backgroundRepeat: "no-repeat",
-                  backgroundPosition: "center",
-                  backgroundSize: "100%",
-                  marginRight: 3,
-                  marginLeft: 3,
-                }}
-              ></Box>
-              <Box>
-                <Typography variant="h6">Virtual Account BCA</Typography>
-              </Box>
-              <Box sx={{ marginLeft: "auto" }}>
-                <Radio
-                  checked={selectedValue === "b"}
-                  onChange={handleChange}
-                  value="b"
-                  name="radio-buttons"
-                  inputProps={{ "aria-label": "B" }}
+                  inputProps={{ "aria-label": "permata" }}
                   sx={{
                     color: "black",
                     "&.Mui-checked": {
@@ -225,6 +222,7 @@ const ChoosePayment = () => {
         </Box>
 
         <CardActionArea
+        onClick={()=>handlePayment()}
           sx={{
             height: 70,
             marginTop: 10,
@@ -233,8 +231,11 @@ const ChoosePayment = () => {
             padding: 3,
             display: "flex",
             alignItems: "center",
+            position:'sticky',
+            bottom:'0'
           }}
         >
+         
           <Box
             sx={{
               borderRight: 1,
@@ -244,7 +245,8 @@ const ChoosePayment = () => {
               alignItems: "center",
             }}
           >
-            <Typography variant="h5">Rp. 20.000</Typography>
+
+            <Typography variant="h5">Rp{totalPrice},00</Typography>
           </Box>
           <Box sx={{ marginLeft: "auto", display: "flex" }}>
             <Typography variant="h4" sx={{ marginRight: 2 }}>
@@ -253,6 +255,11 @@ const ChoosePayment = () => {
             <img alt="next" src="./assets/nextbutton.png" />
           </Box>
         </CardActionArea>
+        <Snackbar open={openSnackBar} autoHideDuration={6000} onClose={handleClose}>
+        <Alert onClose={handleClose} severity="info" sx={{ width: '100%' }}>
+          Pilih Pembayaran Terlebih Dahulu
+        </Alert>
+      </Snackbar>
       </Box>
     </Box>
   );

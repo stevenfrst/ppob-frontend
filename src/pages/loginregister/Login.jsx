@@ -13,7 +13,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { TOKEN } from "../../requestMethod";
 
 //call backend
-import { login } from "../../redux/apiCall";
+import { login } from "../../redux/loginRegisterApi";
 
 const Login = () => {
   const [email, setEmail] = useState("");

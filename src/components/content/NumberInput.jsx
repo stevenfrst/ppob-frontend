@@ -1,9 +1,50 @@
 import { Login } from "@mui/icons-material";
-import { Box, TextField } from "@mui/material";
-import { Link } from "react-router-dom";
+import { Box, IconButton, TextField, Typography } from "@mui/material";
+import { useState } from "react";
+import { saveInputPhoneNumber, saveInputPLN } from "../../redux/userLogSlice";
+import { useDispatch, useSelector } from "react-redux";
+import { useNavigate } from "react-router-dom";
 
 const NumberInput = (props) => {
-  const { type } = props;
+  const { type } = props;  
+  const {inputPhoneNumber} = useSelector((state)=>state.userLog)
+  const {inputPLN} = useSelector((state)=>state.userLog)
+  const [input, setInput] = useState(type !=='paypln'?inputPhoneNumber:inputPLN);
+  const [error, setError] = useState("");
+  const dispatch = useDispatch();
+
+  const regexPhone = /^08[1-9][0-9]{6,9}$/;
+
+  const link = "/" + type;
+
+  const navigate = useNavigate();
+  
+  const handleChange = (e) => {
+    setInput(e.target.value);
+    setError("");
+  };
+
+  const handleClick = () => {
+    if (type !== "paypln") {
+      if (!input) {
+        setError("Input masih kosong");
+      } else if (!regexPhone.test(input)) {
+        setError("Gunakan Format 08xxxx");
+      } else if (error === "") {
+        dispatch(saveInputPhoneNumber(input));
+        navigate(link);
+      }
+    } else{
+      if (!input) {
+        setError("Input masih kosong");
+      } else if (error ===""){
+        dispatch(saveInputPLN(input))
+        navigate(link)
+      }
+      
+    } 
+    
+  };
 
   return (
     <Box sx={{ marginTop: 3, width: 450 }}>
@@ -20,7 +61,7 @@ const NumberInput = (props) => {
           fontWeight: "bold",
         }}
       >
-        {type === "Listrik" ? "Isi Nomor Pelanggan PLN" : "Isi Nomor Handphone"}
+        {type === "paypln" ? "Isi Nomor Pelanggan PLN" : "Isi Nomor Handphone"}
       </Box>
 
       <Box
@@ -33,6 +74,16 @@ const NumberInput = (props) => {
           width: 450,
         }}
       >
+        <Typography
+          sx={{
+            marginLeft: "auto",
+            marginRight: 2,
+            fontWeight: "bold",
+            color: "red",
+          }}
+        >
+          {error}
+        </Typography>
         <Box
           sx={{
             width: 450,
@@ -49,6 +100,7 @@ const NumberInput = (props) => {
             paddingTop: 1,
             paddingBottom: 1,
           }}
+          style={error ? { borderColor: "red" } : { borderColor: "#113CFC" }}
         >
           <Box
             sx={{
@@ -56,20 +108,37 @@ const NumberInput = (props) => {
               ml: 2,
             }}
           >
-            <TextField
-              id="standard-basic"
-              variant="standard"
-              defaultValue=" "
-              sx={{ width: 350 }}
-              inputProps={{ style: { color: "Black", fontSize: "25px" } }}
-              InputLabelProps={{ style: { color: "Black" } }}
-              SelectProps={{ style: { color: "white" } }}
-            />
+            {error ? (
+              <TextField
+                error
+                variant="standard"
+                defaultValue={input}
+                sx={{ width: 350 }}
+                inputProps={{ style: { color: "black", fontSize: "25px" } }}
+                InputLabelProps={{ style: { color: "black" } }}
+                SelectProps={{ style: { color: "white" } }}
+                onChange={(e) => handleChange(e)}
+              />
+            ) : (
+              <TextField
+                id="standard-basic"
+                variant="standard"
+                defaultValue={input}
+                sx={{ width: 350 }}
+                inputProps={{ style: { color: "black", fontSize: "25px" } }}
+                InputLabelProps={{ style: { color: "black" } }}
+                SelectProps={{ style: { color: "white" } }}
+                onChange={(e) => handleChange(e)}
+              />
+            )}
           </Box>
           <Box sx={{ mr: 2 }}>
-            <Link to="login" style={{ color: "black" }}>
+            <IconButton
+              style={error ? { color: "red" } : { color: "black" }}
+              onClick={() => handleClick()}
+            >
               <Login />
-            </Link>
+            </IconButton>
           </Box>
         </Box>
       </Box>

@@ -10,7 +10,30 @@ import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import Header2 from "../../components/navigation/Header2";
 import OrderIdCard from "../../components/card/OrderIdCard";
 import Text from "../../components/typography/Text";
+import { useDispatch, useSelector } from "react-redux";
+import { useEffect } from "react";
+import { getTransaction } from "../../redux/transactionApi";
+import { product } from "../../redux/productApi";
 const TransactionDetail = () => {
+  const dispatch = useDispatch();
+  const { orderIDPayment } = useSelector((state) => state.userLog);
+  const { transactionData } = useSelector((state) => state.transaction);
+  
+  function numberWithCommas(x) {
+    return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".");
+  }
+  const {listProduct} = useSelector((state)=>state.product)
+  console.log("name1", listProduct?.data)
+  console.log("name2", transactionData?.data)
+  useEffect(() => {
+    getTransaction(dispatch, orderIDPayment);
+  }, [dispatch, orderIDPayment]);
+  const category = transactionData?.data?.product_name?.startsWith("Pulsa")?1:transactionData?.data?.product_name?.startsWith("Voucher")?2:3
+  useEffect(() => {
+    product(dispatch, category);
+  }, [dispatch, category]);
+  const picture = listProduct?.data.filter((product) => product?.name === transactionData?.data?.product_name).map(product=>product?.link)
+  console.log("picture", picture)
   return (
     <Box>
       <Header2></Header2>
@@ -34,7 +57,7 @@ const TransactionDetail = () => {
           }}
         >
           <Text text="Order ID" />
-          <OrderIdCard></OrderIdCard>
+          <OrderIdCard isPayment={true}></OrderIdCard>
           <Box sx={{ marginBottom: 2 }}>&nbsp;</Box>
           <Box sx={{ marginBottom: 3 }}>
             <Text text="Detail Order" />
@@ -54,21 +77,39 @@ const TransactionDetail = () => {
                   :
                 </Typography>
               </Box>
-              <Box
-                component="span"
-                sx={{
-                  border: 1,
+              {transactionData?.data?.transaction_status === "pending" ? (
+                <Box
+                  component="span"
+                  sx={{
+                    border: 1,
 
-                  padding: 0.5,
-                  borderStyle: "solid",
-                  backgroundColor: "#113CFC",
-                  color: "white",
-                  borderRadius: 2,
-                  marginLeft: "auto",
-                }}
-              >
-                <Typography>Done</Typography>
-              </Box>
+                    padding: 0.5,
+                    borderStyle: "solid",
+                    backgroundColor: "#FF2929",
+                    color: "white",
+                    borderRadius: 2,
+                    marginLeft: "auto",
+                  }}
+                >
+                  <Typography>Sedang di Proses</Typography>
+                </Box>
+              ) : (
+                <Box
+                  component="span"
+                  sx={{
+                    border: 1,
+
+                    padding: 0.5,
+                    borderStyle: "solid",
+                    backgroundColor: "#113CFC",
+                    color: "white",
+                    borderRadius: 2,
+                    marginLeft: "auto",
+                  }}
+                >
+                  <Typography>Selesai</Typography>
+                </Box>
+              )}
             </Box>
             <Box
               sx={{
@@ -86,7 +127,9 @@ const TransactionDetail = () => {
                 </Typography>
               </Box>
 
-              <Typography sx={{ marginLeft: "auto" }}>VA BCA</Typography>
+              <Typography sx={{ marginLeft: "auto" }}>
+                VA {transactionData?.data?.provider?.toUpperCase()}
+              </Typography>
             </Box>
             <Box
               sx={{
@@ -105,7 +148,7 @@ const TransactionDetail = () => {
               </Box>
 
               <Typography sx={{ marginLeft: "auto", fontWeight: "bold" }}>
-                Rp. 22.000
+                Rp{numberWithCommas(transactionData?.data?.total)},00
               </Typography>
             </Box>
             <Box
@@ -133,19 +176,19 @@ const TransactionDetail = () => {
             <Text text="Voucher Detail" />
             <Box
               sx={{
-                marginTop: 1,
+                marginTop: 2,
                 display: "flex",
                 alignItems: "center",
                 justifyContent: "center",
               }}
             >
               <img
-                src="./assets/xl.png"
+                src={picture}
                 alt="xl"
                 style={{ width: 50, height: 50, marginRight: "10px" }}
               />
               <Typography variant="h5" sx={{ fontWeight: "bold" }}>
-                XL 5000
+                {transactionData?.data?.product_name}
               </Typography>
             </Box>
           </Box>

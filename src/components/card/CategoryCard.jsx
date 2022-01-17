@@ -3,22 +3,38 @@ import { Box, Typography, CardActionArea } from "@mui/material";
 import NumberInput from "../content/NumberInput";
 import { ConfirmationNumber, FlashOn, PhoneInTalk } from "@mui/icons-material";
 import History from "../content/History";
+import { useLocation } from "react-router-dom";
 
 const CategoryCard = (props) => {
   const { isHome } = props;
-  const [currentButton, setCurrentButton] = useState(null);
-  const [openVoucher, setOpenVoucher] = useState(false);
-  const [openPulsa, setOpenPulsa] = useState(false);
-  const [openListrik, setOpenListrik] = useState(false);
+  const location = useLocation();
+  const [currentButton, setCurrentButton] = useState(
+    isHome
+      ? null
+      : location?.pathname === "/buypulsa"
+      ? 1
+      : location?.pathname === "/buyvoucher" || location?.pathname==="/buyvoucher/selectvoucher"
+      ? 2
+      : 3
+  );
+  const [openVoucher, setOpenVoucher] = useState(
+    location?.pathname==='/buyvoucher' ||
+    location?.pathname ==='/buyvoucher/selectvoucher'
+  );
+  const [openPulsa, setOpenPulsa] = useState(
+    location?.pathname === "/buypulsa"
+  );
+  const [openListrik, setOpenListrik] = useState(location?.pathname==="/paypln");
   const [openHistory, setOpenHistory] = useState(true);
-  const [type, setType] = useState("");
+  const [type, setType] = useState(location?.pathname.slice(1));
+  
   const handleOpen = (type) => {
-    if (type === "Pulsa") {
+    if (type === "buypulsa") {
       setOpenPulsa(!openPulsa);
       setOpenVoucher(false);
       setOpenListrik(false);
       setCurrentButton(1);
-    } else if (type === "Voucher") {
+    } else if (type === "buyvoucher") {
       setOpenVoucher(!openVoucher);
       setOpenPulsa(false);
       setOpenListrik(false);
@@ -31,6 +47,8 @@ const CategoryCard = (props) => {
     }
     setType(type);
   };
+
+  
   useEffect(() => {
     if (openListrik || openVoucher || openPulsa) {
       setOpenHistory(false);
@@ -38,6 +56,7 @@ const CategoryCard = (props) => {
       setOpenHistory(true);
     }
   }, [openListrik, openVoucher, openPulsa]);
+
   return (
     <Box>
       <Box
@@ -56,7 +75,7 @@ const CategoryCard = (props) => {
             borderRadius: 3,
             display: "block",
           }}
-          onClick={() => handleOpen("Pulsa")}
+          onClick={() => handleOpen("buypulsa")}
         >
           <Box
             sx={currentButton === 1 ? { color: "yellow" } : { color: "white" }}
@@ -84,7 +103,7 @@ const CategoryCard = (props) => {
             marginRight: 2,
             borderRadius: 3,
           }}
-          onClick={() => handleOpen("Voucher")}
+          onClick={() => handleOpen("buyvoucher")}
         >
           <Box
             sx={currentButton === 2 ? { color: "yellow" } : { color: "white" }}
@@ -113,7 +132,7 @@ const CategoryCard = (props) => {
 
             borderRadius: 3,
           }}
-          onClick={() => handleOpen("Listrik")}
+          onClick={() => handleOpen("paypln")}
         >
           <Box
             sx={currentButton === 3 ? { color: "yellow" } : { color: "white" }}

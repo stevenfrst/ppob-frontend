@@ -1,9 +1,50 @@
 import { Box, CardActionArea, Typography } from "@mui/material";
+import { useEffect, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
 import CategoryCard from "../../components/card/CategoryCard";
 import Header2 from "../../components/navigation/Header2";
 import Text from "../../components/typography/Text";
-
+import axios from "axios";
+import { product } from "../../redux/productApi";
 const PayPLN = () => {
+  const [customer, setCustomer] = useState("");
+  const dispatch = useDispatch();
+  const { inputPLN } = useSelector((state) => state.userLog);
+  const { listProduct } = useSelector((state) => state.product);
+  const [error, setError] = useState("")
+  const randomNumber=(min, max)=>{
+    const r = Math.random()*(max-min) + min
+    return Math.floor(r)
+}
+  function numberWithCommas(x) {
+    return x?.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".");
+  }
+  const number = parseInt(randomNumber(41,45))
+  const [tagihan, setTagihan] = useState("")
+  const editedTagihan = numberWithCommas(tagihan);
+  useEffect(()=>{
+    setTagihan(listProduct?.data
+      .filter((product) => product?.id === number)
+      .map((product) => product?.price + product?.tax))
+  },[listProduct?.data, number])
+  useEffect(() => {
+    
+    const getCustomer = async () => {
+      try {
+        const res = await axios.get(
+          `https://6141f3fb4d16670017ba2ac7.mockapi.io/api/v1/pelanggan/${inputPLN}`
+        );
+        setCustomer(res?.data);
+        setError("")
+      } catch (err) {
+        setError("Data Tidak Ditemukan")
+      }
+    };
+    getCustomer();
+  }, [inputPLN]);
+  useEffect(() => {
+    product(dispatch, 3);
+  }, [dispatch]);
   return (
     <div>
       <Header2></Header2>
@@ -32,6 +73,8 @@ const PayPLN = () => {
         <Box sx={{ marginTop: 3 }}>
           <Text text="Informasi Tagihan" />
         </Box>
+        {error?<Box sx={{marginTop:3}}><Typography>Data Pelanggan Tidak Ditemukan</Typography></Box>:
+        <>
         <Box sx={{ marginTop: 3 }}>
           <Typography>Nama Pelanggan</Typography>
         </Box>
@@ -44,7 +87,7 @@ const PayPLN = () => {
             marginTop: 1,
           }}
         >
-          <Typography>Joni</Typography>
+          <Typography>{customer?.name}</Typography>
         </Box>
         <Box sx={{ marginTop: 3 }}>
           <Typography>Nomor Pelanggan</Typography>
@@ -58,7 +101,7 @@ const PayPLN = () => {
             marginTop: 1,
           }}
         >
-          <Typography>752123xxxxxxxxxxxxxxxxxxxxxxxxxxxxx</Typography>
+          <Typography>{customer?.nomor_pelanggan}</Typography>
         </Box>
         <Box sx={{ marginTop: 3 }}>
           <Typography>Alamat</Typography>
@@ -72,7 +115,7 @@ const PayPLN = () => {
             marginTop: 1,
           }}
         >
-          <Typography>Jawa Tengah</Typography>
+          <Typography>{customer?.alamat}</Typography>
         </Box>
         <Box sx={{ marginTop: 3 }}>
           <Typography>Tagihan</Typography>
@@ -86,8 +129,9 @@ const PayPLN = () => {
             marginTop: 1,
           }}
         >
-          <Typography>Rp. 200.000,-</Typography>
-        </Box>
+          <Typography>Rp{editedTagihan},00</Typography>
+        </Box></>
+}
         <CardActionArea
           sx={{
             height: 70,

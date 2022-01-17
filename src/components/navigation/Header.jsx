@@ -1,11 +1,16 @@
-import { IconButton, Toolbar } from "@mui/material";
+import { Avatar, IconButton, Toolbar } from "@mui/material";
 import AppBar from "@mui/material/AppBar";
 import { Login } from "@mui/icons-material";
 import { Box } from "@mui/material";
 import { Link } from "react-router-dom";
-
 import React from "react";
+import { useSelector } from "react-redux";
+
 const Header = () => {
+  const { currentUser } = useSelector((state) => state.login);
+  const {userData} = useSelector((state)=>state.user)
+  const imageLink = "https://avatars.dicebear.com/api/miniavs/"+userData?.data?.username+".svg";
+
   return (
     <>
       <AppBar sx={{ backgroundColor: "white", position: "fixed" }}>
@@ -24,12 +29,19 @@ const Header = () => {
                 width="120px"
               />
             </Box>
-
-            <IconButton sx={{ marginLeft: "auto", color: "white" }}>
-              <Link to="login" style={{ color: "black" }}>
-                <Login />
-              </Link>
-            </IconButton>
+            {currentUser?.data?.token ? (
+              <Avatar
+                alt="avatar"
+                src={imageLink}
+                sx={{ marginLeft: "auto" }}
+              />
+            ) : (
+              <IconButton sx={{ marginLeft: "auto", color: "white" }}>
+                <Link to="login" style={{ color: "black" }}>
+                  <Login />
+                </Link>
+              </IconButton>
+            )}
           </Box>
         </Toolbar>
       </AppBar>

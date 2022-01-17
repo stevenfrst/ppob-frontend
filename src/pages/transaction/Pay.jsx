@@ -1,10 +1,30 @@
 import { FileCopy } from "@mui/icons-material";
 import { Box, CardActionArea, IconButton, Typography } from "@mui/material";
+import { useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { useNavigate } from "react-router-dom";
 import OrderIdCard from "../../components/card/OrderIdCard";
 import Header2 from "../../components/navigation/Header2";
 import Text from "../../components/typography/Text";
+import { getTransaction } from "../../redux/transactionApi";
 
 const Pay = () => {
+  const {transactionResponse} = useSelector((state)=>state.transaction)
+  const {transactionData} = useSelector((state)=>state.transaction)
+  function numberWithCommas(x) {
+    return x?.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".");
+  }
+  const navigate = useNavigate()
+ 
+  const {orderIDPayment} = useSelector((state)=>state.userLog)
+  const dispatch = useDispatch()
+  const totalPrice = numberWithCommas(transactionData?.data?.total);
+  useEffect(()=>{
+    getTransaction(dispatch, orderIDPayment)
+  }, [dispatch, orderIDPayment])
+  const handleRedirect=()=>{
+    navigate('/payment/detail')
+  }
   return (
     <Box>
       <Header2></Header2>
@@ -12,7 +32,7 @@ const Pay = () => {
         <Box>
           <Text text="Order ID" />
         </Box>
-        <OrderIdCard></OrderIdCard>
+        <OrderIdCard isPayment={true}></OrderIdCard>
         <Box
           sx={{
             display: "flex",
@@ -54,7 +74,7 @@ const Pay = () => {
             }}
           >
             <Typography variant="h5" sx={{ fontWeight: "bold" }}>
-              Rp. 22.412
+              Rp{totalPrice},00
             </Typography>
           </Box>
           <IconButton>
@@ -86,7 +106,7 @@ const Pay = () => {
               sx={{
                 width: "45px",
                 height: "45px",
-                background: "url(./assets/bca.png)",
+                background: `url(./assets/${transactionData?.data?.provider}.png)`,
                 borderRadius: 3,
                 backgroundRepeat: "no-repeat",
                 backgroundPosition: "center",
@@ -96,9 +116,9 @@ const Pay = () => {
               }}
             ></Box>
             <Box>
-              <Typography variant="h5">98897xxxxxxxxxxxx</Typography>
-              <Typography sx={{ fontStyle: "italicn" }}>
-                Virtual Account BCA
+              <Typography variant="h5">{transactionResponse?.data}</Typography>
+              <Typography sx={{ fontStyle: "italic" }}>
+                Virtual Account {(transactionData?.data?.provider)}
               </Typography>
             </Box>
           </Box>
@@ -146,6 +166,9 @@ const Pay = () => {
             padding: 3,
             display: "flex",
             alignItems: "center",
+            position:'sticky',
+            top:'auto',
+            bottom:0
           }}
         >
           <Box
@@ -157,8 +180,9 @@ const Pay = () => {
               textAlign: "center",
               padding: 1,
             }}
+            onClick={()=>handleRedirect()}
           >
-            <Typography>Proses Pembayaran</Typography>
+            <Typography>Detail Transaksi</Typography>
           </Box>
         </CardActionArea>
       </Box>

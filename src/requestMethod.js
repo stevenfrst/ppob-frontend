@@ -1,6 +1,6 @@
 import axios from "axios";
 
-const BASE_URL = "http://localhost:1234/v1/";
+const BASE_URL = "https://api.stevenhoyo.co/v1/";
 
 const user = JSON.parse(localStorage.getItem("persist:root"))?.login;
 const currentUser = user && JSON.parse(user).currentUser;
@@ -17,5 +17,5 @@ export const publicRequest = axios.create({
 
 export const userRequest = axios.create({
   baseURL: BASE_URL,
-  headers: { token: `Bearer ${TOKEN}` },
+  headers: { Authorization: `Bearer ${TOKEN}` },
 });
