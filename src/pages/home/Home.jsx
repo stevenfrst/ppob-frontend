@@ -3,6 +3,7 @@ import { useState } from "react"
 import BottomBar from "../../components/navigation/BottomBar"
 import Header from "../../components/navigation/Header"
 import Dashboard from "./Dashboard"
+import History from "./History"
 import User from "./User"
 
 const Home = ()=>{
@@ -13,6 +14,8 @@ const Home = ()=>{
         return <Dashboard/>
       case 1:
         return <User/>
+      case 2:
+        return<History/>
       default:
         return new Error('This view does not exist')
     }

@@ -5,6 +5,7 @@ import { useEffect } from "react";
 import axios from "axios";
 import { getUserData, isFetchingUser } from "../../redux/userSlice";
 import { getUserFailure } from "../../redux/errorSlice";
+import { Box } from "@mui/material";
 
 const Dashboard = () => {
   const { currentUser } = useSelector((state) => state.login);
@@ -29,7 +30,11 @@ const Dashboard = () => {
     }
   }, [currentUser?.data?.token, dispatch]);
 
-  return <Content isHome={true}></Content>;
+  return (
+ 
+  <Content isHome={true}></Content>
+
+  );
 };
 
 export default Dashboard;
