@@ -12,6 +12,8 @@ import TransactionDetail from "./pages/transaction/TransactionDetail";
 import PayLoading from "./pages/transaction/PayLoading";
 import TransactionSuccess from "./pages/transaction/TransactionSuccess";
 import OrderLoading from "./pages/transaction/OrderLoading";
+import User from "./pages/home/User";
+import Verification from "./pages/home/Verification";
 
 function App() {
   return (
@@ -33,6 +35,8 @@ function App() {
         <Route path="success" element={<TransactionSuccess />}></Route>
         <Route path="payment/detail" element={<TransactionDetail />}></Route>
         <Route path="orderloading" element={<OrderLoading />}></Route>
+        <Route path='user' element={<User/>}></Route>
+        <Route path='verification' element={<Verification/>}></Route>
       </Routes>
     </BrowserRouter>
   );

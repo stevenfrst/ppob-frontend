@@ -22,7 +22,7 @@ const ChoosePayment = () => {
   const {currentUser} = useSelector((state)=>state.login)
   const {orderID} = useSelector((state)=>state.userLog)
   const [openSnackBar, setOpenSnackBar]= useState(false)
- 
+  const {createTransactionError} = useSelector((state)=>state.error)
   const data = {
     product_id:selectedProduct?.id,
     discount:0,
@@ -31,7 +31,7 @@ const ChoosePayment = () => {
     bank: selectedValue,
     order_id:parseInt(orderID)
   }
-  
+ 
   const navigate = useNavigate()
   if (!currentUser) {
     return <Navigate to="/" />;
@@ -257,7 +257,7 @@ const ChoosePayment = () => {
         </CardActionArea>
         <Snackbar open={openSnackBar} autoHideDuration={6000} onClose={handleClose}>
         <Alert onClose={handleClose} severity="info" sx={{ width: '100%' }}>
-          Pilih Pembayaran Terlebih Dahulu
+        {createTransactionError?"Terjadi Kesalahan, Silahkan Refresh Halaman":"Pilih Pembayaran Terlebih Dahulu"} 
         </Alert>
       </Snackbar>
       </Box>

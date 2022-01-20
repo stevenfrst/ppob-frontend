@@ -20,11 +20,9 @@ const TransactionDetail = () => {
   const { transactionData } = useSelector((state) => state.transaction);
   
   function numberWithCommas(x) {
-    return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".");
+    return x?.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".");
   }
   const {listProduct} = useSelector((state)=>state.product)
-  console.log("name1", listProduct?.data)
-  console.log("name2", transactionData?.data)
   useEffect(() => {
     getTransaction(dispatch, orderIDPayment);
   }, [dispatch, orderIDPayment]);
@@ -33,7 +31,7 @@ const TransactionDetail = () => {
     product(dispatch, category);
   }, [dispatch, category]);
   const picture = listProduct?.data.filter((product) => product?.name === transactionData?.data?.product_name).map(product=>product?.link)
-  console.log("picture", picture)
+ 
   return (
     <Box>
       <Header2></Header2>
@@ -168,7 +166,7 @@ const TransactionDetail = () => {
               </Box>
 
               <Typography sx={{ marginLeft: "auto" }}>
-                27 Des 2021 &nbsp;11:04
+                {new Date(transactionData?.data?.created_at).toLocaleString('en-GB', { timeZone: 'UTC' })}
               </Typography>
             </Box>
           </Box>

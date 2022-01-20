@@ -6,8 +6,8 @@ import BottomNavigationAction from "@mui/material/BottomNavigationAction";
 import { AppBar } from "@mui/material";
 import { AccountCircle, History, Home } from "@mui/icons-material";
 
-export default function BottomBar() {
-  const [value, setValue] = React.useState(0);
+export default function BottomBar({value, onChange}) {
+ 
 
   return (
     <AppBar
@@ -25,9 +25,7 @@ export default function BottomBar() {
         <BottomNavigation
           showLabels
           value={value}
-          onChange={(event, newValue) => {
-            setValue(newValue);
-          }}
+          onChange={(e, tab)=>onChange(tab)}
         >
           <BottomNavigationAction label="Dashboard" icon={<Home />} />
           <BottomNavigationAction label="Akun" icon={<AccountCircle />} />

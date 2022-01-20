@@ -6,6 +6,8 @@ import Header2 from "../../components/navigation/Header2";
 import Text from "../../components/typography/Text";
 import axios from "axios";
 import { product } from "../../redux/productApi";
+import { setOrderID, setSelectedProduct } from "../../redux/userLogSlice";
+import { useNavigate } from "react-router-dom";
 const PayPLN = () => {
   const [customer, setCustomer] = useState("");
   const dispatch = useDispatch();
@@ -22,6 +24,19 @@ const PayPLN = () => {
   const number = parseInt(randomNumber(41,45))
   const [tagihan, setTagihan] = useState("")
   const editedTagihan = numberWithCommas(tagihan);
+  const { userData } = useSelector((state) => state.user);
+  const { currentUser } = useSelector((state) => state.login);
+  let orderID = String(userData?.data?.id) + Math.floor(Math.random() * 10) + String(Date.now());
+ 
+  if (!currentUser?.data?.token) {
+    orderID = Math.floor(Math.random() * 10) + String(Date.now());
+  }
+  const [selectedPLN, setSelectedPLN] = useState()
+  useEffect(()=>{
+     listProduct?.data.filter((product)=>product?.id ===number).map((product)=>setSelectedPLN(product))
+  },[listProduct?.data, number])
+  
+  console.log(selectedPLN)
   useEffect(()=>{
     setTagihan(listProduct?.data
       .filter((product) => product?.id === number)
@@ -45,6 +60,12 @@ const PayPLN = () => {
   useEffect(() => {
     product(dispatch, 3);
   }, [dispatch]);
+  const navigate = useNavigate()
+  const handleClick = (product) => {
+    dispatch(setSelectedProduct(product));
+    dispatch(setOrderID(orderID));
+    navigate("/choosepayment");
+  };
   return (
     <div>
       <Header2></Header2>
@@ -142,6 +163,7 @@ const PayPLN = () => {
             display: "flex",
             alignItems: "center",
           }}
+          onClick={()=>handleClick(selectedPLN)}
         >
           <Box sx={{ marginLeft: "auto", display: "flex" }}>
             <Typography variant="h4" sx={{ marginRight: 2 }}>

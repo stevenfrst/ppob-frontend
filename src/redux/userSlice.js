@@ -4,7 +4,8 @@ const userSlice = createSlice({
     name:'user',
     initialState:{
         userData:null,
-        isFetching:false
+        isFetching:false,
+        isVerified:null,
     },
     reducers:{
         getUserData:(state, action)=>{
@@ -12,7 +13,7 @@ const userSlice = createSlice({
         },
         isFetchingUser:(state, action)=>{
             state.isFetching=action.payload
-        }
+        },
         
     }
 })

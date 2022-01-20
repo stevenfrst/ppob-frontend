@@ -79,7 +79,7 @@ const BuyPulsa = () => {
       setPulsaType("Smartfren");
     }
   }, [inputPhoneNumber]);
-  console.log(pulsaType);
+  
   return (
     <Box>
       <Header2></Header2>

@@ -11,7 +11,7 @@ export const createTransaction = async(dispatch, data, navigate)=>{
         dispatch(getTransactionResponse(res?.data))
         dispatch(isFetchingResponse(false))
         navigate('/payment')
-        console.log(res?.data)
+  
     }catch(err){
         dispatch(createTransactionFailure())
         dispatch(isFetchingResponse(false))

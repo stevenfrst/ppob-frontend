@@ -29,7 +29,7 @@ const VoucherNominalCard = (props) => {
     dispatch(setSelectedProduct(selectedVoucher))
     navigate("/choosepayment");
   };
-  console.log(selectedVoucher)
+
 
   return (
     <Box

@@ -261,7 +261,7 @@ const Register = () => {
             borderColor: "transparent",
             width: "300px",
           }}
-          type="text"
+          type="password"
           name="password"
           value={data.password}
           placeholder="Password"
@@ -284,7 +284,7 @@ const Register = () => {
             borderColor: "transparent",
             width: "300px",
           }}
-          type="text"
+          type="password"
           name="repassword"
           value={data.repassword}
           placeholder="Ulangi Password"

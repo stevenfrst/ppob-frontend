@@ -1,5 +1,5 @@
 import { FileCopy } from "@mui/icons-material";
-import { Box, CardActionArea, IconButton, Typography } from "@mui/material";
+import { Box, CardActionArea, IconButton, Tooltip, Typography } from "@mui/material";
 import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
@@ -15,7 +15,7 @@ const Pay = () => {
     return x?.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".");
   }
   const navigate = useNavigate()
- 
+  
   const {orderIDPayment} = useSelector((state)=>state.userLog)
   const dispatch = useDispatch()
   const totalPrice = numberWithCommas(transactionData?.data?.total);
@@ -25,6 +25,7 @@ const Pay = () => {
   const handleRedirect=()=>{
     navigate('/payment/detail')
   }
+ 
   return (
     <Box>
       <Header2></Header2>
@@ -122,9 +123,11 @@ const Pay = () => {
               </Typography>
             </Box>
           </Box>
+          <Tooltip title="Copied!" onClick={()=>navigator.clipboard.writeText(transactionResponse?.data)}>
           <IconButton>
             <FileCopy sx={{ color: "#3F3D56" }} />
           </IconButton>
+          </Tooltip>
         </Box>
         <Text text="Tata Cara Pembayaran" />
         <Box>
