@@ -145,6 +145,7 @@ const User = () => {
                 justifyContent: "space-between",
                 width: 150,
                 marginRight: 2,
+                
               }}
             >
               <Typography>Username</Typography>
