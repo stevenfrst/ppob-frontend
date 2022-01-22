@@ -74,7 +74,7 @@ const Verification = () => {
   }
   if (userData?.data?.is_verified){
     return(
-       <Navigate to="/user" />
+       <Navigate to="/" />
     )
   }
   return (

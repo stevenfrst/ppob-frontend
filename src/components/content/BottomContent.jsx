@@ -5,9 +5,7 @@ const BottomContent = () => {
   return (
     <Box
       sx={{
-        width: 450,
         height: 300,
-        margin: "auto",
         backgroundColor: "white",
         marginTop: 2,
         display: "block",

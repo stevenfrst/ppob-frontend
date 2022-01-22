@@ -1,29 +1,52 @@
-import { Box } from "@mui/material"
-import { useState } from "react"
-import BottomBar from "../../components/navigation/BottomBar"
-import Header from "../../components/navigation/Header"
-import Dashboard from "./Dashboard"
-import User from "./User"
+import { useDispatch, useSelector } from "react-redux";
+import { useEffect } from "react";
+import axios from "axios";
+import { getUserData, isFetchingUser } from "../../redux/userSlice";
+import { getUserFailure } from "../../redux/errorSlice";
+import { Box } from "@mui/material";
+import TopContent from "../../components/content/TopContent";
+import BottomContent from "../../components/content/BottomContent";
+import Header from "../../components/navigation/Header";
+import BottomBar from "../../components/navigation/BottomBar";
 
-const Home = ()=>{
-  const [tab, setTab] = useState(0)
-  const renderView=()=>{
-    switch(tab){
-      case 0:
-        return <Dashboard/>
-      case 1:
-        return <User/>
-      default:
-        return new Error('This view does not exist')
+const Home = () => {
+  const { currentUser } = useSelector((state) => state.login);
+
+  const dispatch = useDispatch();
+  useEffect(() => {
+    if (currentUser?.data?.token) {
+      const getUser = async () => {
+        dispatch(isFetchingUser(true));
+        try {
+          const res = await axios.get("https://api.stevenhoyo.co/v1/user", {
+            headers: { Authorization: `Bearer ${currentUser?.data?.token}` },
+          });
+          dispatch(getUserData(res?.data));
+          dispatch(isFetchingUser(false));
+        } catch (err) {
+          dispatch(getUserFailure());
+          dispatch(isFetchingUser(false));
+        }
+      };
+      getUser();
     }
-  }
-  return (
-    <Box>
-      <Header></Header>
-      {renderView()}
-      <BottomBar value={tab} onChange={setTab}></BottomBar>
-    </Box>
-  )
-}
+  }, [currentUser?.data?.token, dispatch]);
 
-export default Home
+  return (
+    <Box
+      sx={{
+        width: 450,
+        margin: "auto",
+        marginTop: 10,
+        marginBottom: 10,
+      }}
+    >
+      <Header></Header>
+      <TopContent isHome={true} />
+      <BottomContent />
+      <BottomBar currentPage={1}></BottomBar>
+    </Box>
+  );
+};
+
+export default Home;
