@@ -1,33 +1,31 @@
+//react and redux
+import { Navigate, useNavigate } from "react-router-dom";
+import { useEffect, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
+
+//call backend
+import { login } from "../../redux/loginRegisterApi";
+
 //mui
 import { Box, Link, Typography } from "@mui/material";
 import { styled } from "@mui/material/styles";
 import Button from "@mui/material/Button";
 import { yellow } from "@mui/material/colors";
 
-//react and redux
-import { Navigate, useNavigate } from "react-router-dom";
-import { useEffect, useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
-
-//check token
-import { TOKEN } from "../../requestMethod";
-
-//call backend
-import { login } from "../../redux/loginRegisterApi";
-
 const Login = () => {
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [errMsg, setErrMsg] = useState({ email: "", password: "" });
-  const regexEmail = /^[\w-.]+@([\w-]+\.)+[\w-]{2,4}$/;
-
-  const dispatch = useDispatch();
+  const { currentUser } = useSelector((state) => state.login);
   const { isfetching } = useSelector((state) => state.login);
   const { loginError } = useSelector((state) => state.error);
 
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
   const bodyForm = new FormData();
 
-  const navigate = useNavigate();
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [errMsg, setErrMsg] = useState({ email: "", password: "" });
+
+  const regexEmail = /^[\w-.]+@([\w-]+\.)+[\w-]{2,4}$/;
 
   const handleChange = (e) => {
     const name = e.target.name;
@@ -72,13 +70,13 @@ const Login = () => {
     }
   };
 
-  const ColorButton = styled(Button)(({ theme }) => ({
+  const ColorButton = styled(Button)(() => ({
+    width: "320px",
+    marginBottom: "10px",
+    padding: "10px",
     color: "#113CFC",
     fontWeight: "bold",
-    width: "320px",
-    padding: "10px",
     borderRadius: "10px",
-    marginBottom: "10px",
     backgroundColor: yellow[500],
     "&:hover": {
       backgroundColor: yellow[700],
@@ -101,26 +99,23 @@ const Login = () => {
     }
   }, [loginError]);
 
-  if (TOKEN) {
+  if (currentUser?.data?.token) {
     return <Navigate to="/" />;
   }
 
   return (
     <Box
-      sx={(theme) => ({
+      sx={() => ({
         width: 450,
-        backgroundColor: "#113CFC",
-        margin: "auto",
-        color: "white",
-        textAlign: "center",
         height: "100vh",
+        margin: "auto",
         display: "flex",
+        flexDirection: "column",
+        textAlign: "center",
         alignItems: "center",
         justifyContent: "center",
-        [theme.breakpoints.down("sm")]: {
-          width: "100vw",
-        },
-        flexDirection: "column",
+        backgroundColor: "#113CFC",
+        color: "white",
       })}
     >
       <Typography variant="h3" style={{ marginBottom: "30px" }}>
@@ -137,11 +132,11 @@ const Login = () => {
         <input
           style={{
             height: "20px",
-            marginBottom: "20px",
-            borderRadius: "10px",
-            padding: "10px",
-            borderColor: "transparent",
             width: "300px",
+            marginBottom: "20px",
+            padding: "10px",
+            borderRadius: "10px",
+            borderColor: "transparent",
           }}
           type="text"
           name="email"
@@ -161,11 +156,11 @@ const Login = () => {
         <input
           style={{
             height: "20px",
-            marginBottom: "20px",
-            borderRadius: "10px",
-            padding: "10px",
-            borderColor: "transparent",
             width: "300px",
+            marginBottom: "20px",
+            padding: "10px",
+            borderRadius: "10px",
+            borderColor: "transparent",
           }}
           type="password"
           name="password"

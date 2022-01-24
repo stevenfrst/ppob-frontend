@@ -1,21 +1,25 @@
 import { useState } from "react";
-import {  useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
 import { AppBar, Box, Toolbar } from "@mui/material";
 import IconButton from "@mui/material/IconButton";
 import { AccountCircle, History, Home } from "@mui/icons-material";
 
 const BottomBar = (props) => {
-  const {currentPage} = props
+  const { currentPage } = props;
+
   const [currentButton, setCurrentButton] = useState(currentPage);
-  
-  const navigate = useNavigate()
+
+  const navigate = useNavigate();
+
   const changeColorNav = (id) => {
     setCurrentButton(id);
-    if(id===1){
-      navigate("/")
-    } else if(id===2){
-      navigate("/user")
+    if (id === 1) {
+      navigate("/");
+    } else if (id === 2) {
+      navigate("/user");
+    } else if (id === 3) {
+      navigate("/history");
     }
   };
 
@@ -31,9 +35,6 @@ const BottomBar = (props) => {
         margin: "auto",
         backgroundColor: "white",
         borderRadius: 5,
-        [theme.breakpoints.down("sm")]: {
-          width: "100vw",
-        },
       })}
     >
       <Toolbar>
@@ -57,7 +58,6 @@ const BottomBar = (props) => {
                   color: "#113CFC",
                   position: "absolute",
                   zIndex: 1,
-
                   left: 0,
                   right: 0,
                   margin: "0 auto",
@@ -67,7 +67,6 @@ const BottomBar = (props) => {
                   color: "#7D7D7D",
                   position: "absolute",
                   zIndex: 1,
-
                   left: 0,
                   right: 0,
                   margin: "0 auto",
@@ -76,7 +75,7 @@ const BottomBar = (props) => {
           onClick={() => changeColorNav(2)}
         >
           <AccountCircle />
-          <div style={{ fontSize: "10px" }}>Dashboard</div>
+          <div style={{ fontSize: "10px" }}>Akun</div>
         </IconButton>
 
         <Box sx={{ flexGrow: 1 }} />

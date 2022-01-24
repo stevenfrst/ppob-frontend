@@ -22,7 +22,7 @@ import transactionSlice from "./transactionSlice";
 const persistConfig = {
     key:'root',
     storage,
-    blacklist:['error', 'product']
+    blacklist:['error', 'product', 'transaction']
 }
 
 const rootReducer = combineReducers({login:loginSlice, register:registerSlice, product:productSlice, user:userSlice, userLog:userLogSlice, transaction:transactionSlice, error:errorSlice})

@@ -4,8 +4,8 @@ const transactionSlice = createSlice({
     name:'transaction',
     initialState:{
         transactionResponse:null,
-        transactionData:null,
         responseFetch:null,
+        transactionData:null,
         transactionFetch:null
     },
     reducers:{

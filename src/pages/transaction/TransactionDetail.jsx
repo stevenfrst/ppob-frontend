@@ -1,40 +1,99 @@
+import { useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux";
+
+import axios from "axios";
+
+import moment from "moment";
+
+import {
+  getTransactionData,
+  isFetchingTransaction,
+} from "../../redux/transactionSlice";
+import { getTransactionFailure } from "../../redux/errorSlice";
+
+import OrderIdCard from "../../components/card/OrderIdCard";
+import Text from "../../components/typography/Text";
+
 import {
   Accordion,
   AccordionDetails,
   AccordionSummary,
   Box,
+  Button,
   Typography,
 } from "@mui/material";
 
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
-import Header2 from "../../components/navigation/Header2";
-import OrderIdCard from "../../components/card/OrderIdCard";
-import Text from "../../components/typography/Text";
-import { useDispatch, useSelector } from "react-redux";
-import { useEffect } from "react";
-import { getTransaction } from "../../redux/transactionApi";
-import { product } from "../../redux/productApi";
+import { useNavigate } from "react-router-dom";
+import Header from "../../components/navigation/Header";
+
 const TransactionDetail = () => {
-  const dispatch = useDispatch();
   const { orderIDPayment } = useSelector((state) => state.userLog);
   const { transactionData } = useSelector((state) => state.transaction);
-  
+  const { currentUser } = useSelector((state) => state.login);
+
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+
   function numberWithCommas(x) {
     return x?.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".");
   }
-  const {listProduct} = useSelector((state)=>state.product)
+
   useEffect(() => {
-    getTransaction(dispatch, orderIDPayment);
-  }, [dispatch, orderIDPayment]);
-  const category = transactionData?.data?.product_name?.startsWith("Pulsa")?1:transactionData?.data?.product_name?.startsWith("Voucher")?2:3
-  useEffect(() => {
-    product(dispatch, category);
-  }, [dispatch, category]);
-  const picture = listProduct?.data.filter((product) => product?.name === transactionData?.data?.product_name).map(product=>product?.link)
- 
+    const getTransaction = async () => {
+      dispatch(isFetchingTransaction(true));
+      try {
+        const res = await axios.get(
+          `https://api.stevenhoyo.co/v1/payment/${orderIDPayment}`,
+          {
+            headers: { Authorization: `Bearer ${currentUser?.data?.token}` },
+          }
+        );
+        dispatch(getTransactionData(res?.data));
+        dispatch(isFetchingTransaction(false));
+      } catch (err) {
+        dispatch(getTransactionFailure());
+        dispatch(isFetchingTransaction(false));
+      }
+    };
+    getTransaction();
+  }, [currentUser?.data?.token, dispatch, orderIDPayment]);
+
+  const newDate = moment.utc(transactionData?.data?.created_at);
+  const localDate = moment(newDate).local().format("DD-MM-YYYY, h:mm:ss");
+
+  const handleNullID = () => {
+    navigate("/");
+  };
+
+  if (!orderIDPayment) {
+    return (
+      <Box>
+        <Header />
+
+        <Box
+          sx={{
+            width: 450,
+            margin: "auto",
+            display: "flex",
+            flexDirection: "column",
+            justifyContent: "center",
+            alignItems: "center",
+            height: "100vh",
+          }}
+        >
+          <Typography>Silahkan Pilih Produk Terlebih Dahulu</Typography>
+          <br />
+          <Button variant="contained" onClick={() => handleNullID()}>
+            Pilih Produk
+          </Button>
+        </Box>
+      </Box>
+    );
+  }
   return (
     <Box>
-      <Header2></Header2>
+      <Header></Header>
       <Box
         sx={{
           display: "flex",
@@ -165,9 +224,7 @@ const TransactionDetail = () => {
                 </Typography>
               </Box>
 
-              <Typography sx={{ marginLeft: "auto" }}>
-                {new Date(transactionData?.data?.created_at).toLocaleString('en-GB', { timeZone: 'UTC' })}
-              </Typography>
+              <Typography sx={{ marginLeft: "auto" }}>{localDate}</Typography>
             </Box>
           </Box>
           <Box>
@@ -181,7 +238,7 @@ const TransactionDetail = () => {
               }}
             >
               <img
-                src={picture}
+                src={transactionData?.data?.image_url}
                 alt="xl"
                 style={{ width: 50, height: 50, marginRight: "10px" }}
               />

@@ -1,13 +1,18 @@
-import { Avatar, Box, CardActionArea, Typography } from "@mui/material";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
+
 import { setSelectedVoucher } from "../../redux/userLogSlice";
 
+import { Avatar, Box, CardActionArea, Typography } from "@mui/material";
 
 const VoucherCard = (props) => {
   const {listProduct} = props
+
+  const { currentUser } = useSelector((state) => state.login);
+
   const navigate = useNavigate()
   const dispatch = useDispatch()
+  
   const handleClick = (product) =>{
     dispatch(setSelectedVoucher(product))
     navigate("/buyvoucher/selectvoucher")
@@ -15,21 +20,22 @@ const VoucherCard = (props) => {
   return (
     <Box
       sx={{
+        margin: 0.5,
         borderStyle: "solid",
         borderColor: "#113CFC",
-        margin: 0.5,
         borderRadius: 3,
       }}
     >
       <CardActionArea
+      disabled={!currentUser?.data?.token}
         sx={{
+          padding: 1,
           borderStyle: "solid",
           borderColor: "#113CFC",
           borderRadius: 3,
-          padding: 1,
           display: "flex",
-          justifyContent: "center",
           flexDirection: "column",
+          justifyContent: "center",
         }}
         onClick={()=>handleClick(listProduct)}
       >
@@ -38,7 +44,7 @@ const VoucherCard = (props) => {
             alt={listProduct?.sub_category}
             src={listProduct?.link}
             sx={{ width: 50, height: 50 }}
-          ></Avatar>
+          />
         </Box>
         <Box>
           <Typography variant="h6" sx={{ fontWeight: "bold" }}>

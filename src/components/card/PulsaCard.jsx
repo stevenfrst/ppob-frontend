@@ -1,23 +1,34 @@
-import { Avatar, Box, CardActionArea, Typography } from "@mui/material";
 import { useNavigate } from "react-router-dom";
-import { setOrderID, setSelectedProduct } from "../../redux/userLogSlice";
 import { useDispatch, useSelector } from "react-redux";
+
+import { setOrderID, setSelectedProduct } from "../../redux/userLogSlice";
+
+import { Box, CardActionArea, Typography } from "@mui/material";
 
 const PulsaCard = (props) => {
   const { listProduct } = props;
+
+  const { userData } = useSelector((state) => state.user);
+  const { currentUser } = useSelector((state) => state.login);
+
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+
   function numberWithCommas(x) {
-    return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".");
+    return x?.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".");
   }
   const totalPrice = numberWithCommas(listProduct?.price + listProduct.tax);
   const price = numberWithCommas(listProduct?.price);
-  const dispatch = useDispatch();
-  const navigate = useNavigate();
-  const { userData } = useSelector((state) => state.user);
-  const { currentUser } = useSelector((state) => state.login);
-  let orderID = String(userData?.data?.id) + Math.floor(Math.random() * 10) + String(Date.now());
+
+  let orderID =
+    String(userData?.data?.id) +
+    Math.floor(Math.random() * 10) +
+    String(Date.now());
+
   if (!currentUser?.data?.token) {
     orderID = Math.floor(Math.random() * 10) + String(Date.now());
   }
+
   const handleClick = (product) => {
     dispatch(setSelectedProduct(product));
     dispatch(setOrderID(orderID));
@@ -36,10 +47,10 @@ const PulsaCard = (props) => {
       <CardActionArea
         disabled={!currentUser?.data?.token}
         sx={{
+          padding: 1,
           borderStyle: "solid",
           borderColor: "#113CFC",
           borderRadius: 3,
-          padding: 1,
         }}
         onClick={() => handleClick(listProduct)}
       >
@@ -51,7 +62,7 @@ const PulsaCard = (props) => {
               </Typography>
             </Box>
             <Box
-              sx={{ paddingTop: 1, borderTop: 1, width: 130, color: "#113CFC" }}
+              sx={{ width: 130, paddingTop: 1, borderTop: 1, color: "#113CFC" }}
             >
               <Typography variant="h5" sx={{ fontWeight: "bold" }}>
                 Rp{totalPrice},00
@@ -59,7 +70,11 @@ const PulsaCard = (props) => {
             </Box>
           </Box>
           <Box sx={{ marginLeft: "auto" }}>
-            <Avatar alt={listProduct?.name} src={listProduct?.link}></Avatar>
+            <img
+              alt={listProduct?.name}
+              src={listProduct?.link}
+              style={{ width: 30, height: 30 }}
+            />
           </Box>
         </Box>
       </CardActionArea>

@@ -1,8 +1,10 @@
 import { useEffect, useRef, useState } from "react";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 
 import axios from "axios";
+
+import {loginSuccess} from '../../redux/loginSlice'
 
 import Header from "../../components/navigation/Header";
 import BottomBar from "../../components/navigation/BottomBar";
@@ -20,6 +22,7 @@ const User = () => {
   const { currentUser } = useSelector((state) => state.login);
   const { userData } = useSelector((state) => state.user);
 
+  const dispatch = useDispatch()
   const navigate = useNavigate();
 
   const [error, setError] = useState("");
@@ -65,6 +68,11 @@ const User = () => {
   const handleLogin = () => {
     navigate("/login");
   };
+
+  const handleLogout = ()=>{
+    dispatch(loginSuccess(null))
+    navigate("/logout")
+  }
   if (loading) {
     return (
       <Box>
@@ -74,8 +82,8 @@ const User = () => {
             width: 450,
             margin: "auto",
             display: "flex",
-            justifyContent: "center",
             flexDirection: "column",
+            justifyContent: "center",
             alignItems: "center",
             height: "100vh",
           }}
@@ -90,7 +98,7 @@ const User = () => {
   if (!currentUser) {
     return (
       <Box>
-        <Header></Header>
+        <Header/>
         <Box
           sx={{
             width: 450,
@@ -108,13 +116,13 @@ const User = () => {
             Login
           </Button>
         </Box>
-        <BottomBar currentPage={2}></BottomBar>
+        <BottomBar currentPage={2}/>
       </Box>
     );
   }
   return (
     <Box>
-      <Header></Header>
+      <Header/>
       <Box
         sx={{
           width: 450,
@@ -138,14 +146,13 @@ const User = () => {
           }}
         />
         <Box sx={{ width: 400 }}>
-          <Box sx={{ display: "flex", justifyContent: "row", marginBottom: 2 }}>
+          <Box sx={{ display: "flex", marginBottom: 2 }}>
             <Box
               sx={{
                 display: "flex",
                 justifyContent: "space-between",
                 width: 150,
-                marginRight: 2,
-                
+                marginRight: 2,   
               }}
             >
               <Typography>Username</Typography>
@@ -155,7 +162,7 @@ const User = () => {
               <Typography>{userData?.data?.username}</Typography>
             </Box>
           </Box>
-          <Box sx={{ display: "flex", justifyContent: "row", marginBottom: 2 }}>
+          <Box sx={{ display: "flex", marginBottom: 2 }}>
             <Box
               sx={{
                 display: "flex",
@@ -175,7 +182,7 @@ const User = () => {
             <></>
           ) : (
             <Box
-              sx={{ display: "flex", justifyContent: "row", marginBottom: 2 }}
+              sx={{ display: "flex", marginBottom: 2 }}
             >
               <Box
                 sx={{
@@ -204,7 +211,7 @@ const User = () => {
             </Box>
           )}
 
-          <Box sx={{ display: "flex", justifyContent: "row", marginBottom: 2 }}>
+          <Box sx={{ display: "flex", marginBottom: 2 }}>
             <Box
               sx={{
                 display: "flex",
@@ -220,9 +227,10 @@ const User = () => {
               <Typography>{userData?.data?.phoneNumber}</Typography>
             </Box>
           </Box>
+          <Button variant="contained" sx={{marginTop:3}} onClick={()=>handleLogout()}>Logout</Button>
         </Box>
       </Box>
-      <BottomBar currentPage={2}></BottomBar>
+      <BottomBar currentPage={2}/>
     </Box>
   );
 };

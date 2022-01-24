@@ -1,34 +1,103 @@
-import { FileCopy } from "@mui/icons-material";
-import { Box, CardActionArea, IconButton, Tooltip, Typography } from "@mui/material";
 import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
+
+import { setOrderID } from "../../redux/userLogSlice";
+
 import OrderIdCard from "../../components/card/OrderIdCard";
-import Header2 from "../../components/navigation/Header2";
 import Text from "../../components/typography/Text";
-import { getTransaction } from "../../redux/transactionApi";
+
+import { FileCopy } from "@mui/icons-material";
+import {
+  Box,
+  Button,
+  CardActionArea,
+  IconButton,
+  Tooltip,
+  Typography,
+} from "@mui/material";
+import {
+  getTransactionData,
+  isFetchingTransaction,
+} from "../../redux/transactionSlice";
+import { getTransactionFailure } from "../../redux/errorSlice";
+import axios from "axios";
+import Header from "../../components/navigation/Header";
 
 const Pay = () => {
-  const {transactionResponse} = useSelector((state)=>state.transaction)
-  const {transactionData} = useSelector((state)=>state.transaction)
+  const { currentUser } = useSelector((state) => state.login);
+  const { transactionData } = useSelector((state) => state.transaction);
+  const { orderIDPayment } = useSelector((state) => state.userLog);
+
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+
   function numberWithCommas(x) {
     return x?.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".");
   }
-  const navigate = useNavigate()
-  
-  const {orderIDPayment} = useSelector((state)=>state.userLog)
-  const dispatch = useDispatch()
   const totalPrice = numberWithCommas(transactionData?.data?.total);
-  useEffect(()=>{
-    getTransaction(dispatch, orderIDPayment)
-  }, [dispatch, orderIDPayment])
-  const handleRedirect=()=>{
-    navigate('/payment/detail')
+
+  useEffect(() => {
+    const getTransaction = async () => {
+      dispatch(isFetchingTransaction(true));
+      try {
+        const res = await axios.get(
+          `https://api.stevenhoyo.co/v1/payment/${orderIDPayment}`,
+          {
+            headers: { Authorization: `Bearer ${currentUser?.data?.token}` },
+          }
+        );
+        dispatch(getTransactionData(res?.data));
+        dispatch(isFetchingTransaction(false));
+      } catch (err) {
+        dispatch(getTransactionFailure());
+        dispatch(isFetchingTransaction(false));
+      }
+    };
+    getTransaction();
+  }, [currentUser?.data?.token, dispatch, orderIDPayment]);
+
+  const handleRedirect = () => {
+    navigate("/payment/detail");
+  };
+
+  useEffect(() => {
+    dispatch(setOrderID(null));
+  });
+
+  const handleNullID = () => {
+    navigate("/");
+  };
+
+  if (!orderIDPayment) {
+    return (
+      <Box>
+        <Header />
+
+        <Box
+          sx={{
+            width: 450,
+            margin: "auto",
+            display: "flex",
+            flexDirection: "column",
+            justifyContent: "center",
+            alignItems: "center",
+            height: "100vh",
+          }}
+        >
+          <Typography>Silahkan Pilih Produk Terlebih Dahulu</Typography>
+          <br />
+          <Button variant="contained" onClick={() => handleNullID()}>
+            Pilih Produk
+          </Button>
+        </Box>
+      </Box>
+    );
   }
- 
+
   return (
     <Box>
-      <Header2></Header2>
+      <Header></Header>
       <Box sx={{ width: 450, margin: "auto", marginTop: 15 }}>
         <Box>
           <Text text="Order ID" />
@@ -117,16 +186,23 @@ const Pay = () => {
               }}
             ></Box>
             <Box>
-              <Typography variant="h5">{transactionResponse?.data}</Typography>
+              <Typography variant="h5">
+                {transactionData?.data?.link}
+              </Typography>
               <Typography sx={{ fontStyle: "italic" }}>
-                Virtual Account {(transactionData?.data?.provider)}
+                Virtual Account {transactionData?.data?.provider?.toUpperCase()}
               </Typography>
             </Box>
           </Box>
-          <Tooltip title="Copied!" onClick={()=>navigator.clipboard.writeText(transactionResponse?.data)}>
-          <IconButton>
-            <FileCopy sx={{ color: "#3F3D56" }} />
-          </IconButton>
+          <Tooltip
+            title="Copied!"
+            onClick={() =>
+              navigator.clipboard.writeText(transactionData?.data?.link)
+            }
+          >
+            <IconButton>
+              <FileCopy sx={{ color: "#3F3D56" }} />
+            </IconButton>
           </Tooltip>
         </Box>
         <Text text="Tata Cara Pembayaran" />
@@ -169,9 +245,9 @@ const Pay = () => {
             padding: 3,
             display: "flex",
             alignItems: "center",
-            position:'sticky',
-            top:'auto',
-            bottom:0
+            position: "sticky",
+            top: "auto",
+            bottom: 0,
           }}
         >
           <Box
@@ -183,7 +259,7 @@ const Pay = () => {
               textAlign: "center",
               padding: 1,
             }}
-            onClick={()=>handleRedirect()}
+            onClick={() => handleRedirect()}
           >
             <Typography>Detail Transaksi</Typography>
           </Box>

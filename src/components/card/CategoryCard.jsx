@@ -1,33 +1,40 @@
 import { useEffect, useState } from "react";
-import { Box, Typography, CardActionArea } from "@mui/material";
-import NumberInput from "../content/NumberInput";
-import { ConfirmationNumber, FlashOn, PhoneInTalk } from "@mui/icons-material";
-import History from "../content/History";
 import { useLocation } from "react-router-dom";
+
+import NumberInput from "../content/NumberInput";
+import History from "../content/History";
+
+import { Box, Typography, CardActionArea } from "@mui/material";
+import { ConfirmationNumber, FlashOn, PhoneInTalk } from "@mui/icons-material";
 
 const CategoryCard = (props) => {
   const { isHome } = props;
+
   const location = useLocation();
+
   const [currentButton, setCurrentButton] = useState(
     isHome
       ? null
       : location?.pathname === "/buypulsa"
       ? 1
-      : location?.pathname === "/buyvoucher" || location?.pathname==="/buyvoucher/selectvoucher"
+      : location?.pathname === "/buyvoucher" ||
+        location?.pathname === "/buyvoucher/selectvoucher"
       ? 2
       : 3
   );
   const [openVoucher, setOpenVoucher] = useState(
-    location?.pathname==='/buyvoucher' ||
-    location?.pathname ==='/buyvoucher/selectvoucher'
+    location?.pathname === "/buyvoucher" ||
+      location?.pathname === "/buyvoucher/selectvoucher"
   );
   const [openPulsa, setOpenPulsa] = useState(
     location?.pathname === "/buypulsa"
   );
-  const [openListrik, setOpenListrik] = useState(location?.pathname==="/paypln");
+  const [openListrik, setOpenListrik] = useState(
+    location?.pathname === "/paypln"
+  );
   const [openHistory, setOpenHistory] = useState(true);
   const [type, setType] = useState(location?.pathname.slice(1));
-  
+
   const handleOpen = (type) => {
     if (type === "buypulsa") {
       setOpenPulsa(!openPulsa);
@@ -48,7 +55,6 @@ const CategoryCard = (props) => {
     setType(type);
   };
 
-  
   useEffect(() => {
     if (openListrik || openVoucher || openPulsa) {
       setOpenHistory(false);
@@ -70,9 +76,9 @@ const CategoryCard = (props) => {
           sx={{
             width: 140,
             height: 140,
-            backgroundColor: "#113CFC",
             marginRight: 2,
             borderRadius: 3,
+            backgroundColor: "#113CFC",
             display: "block",
           }}
           onClick={() => handleOpen("buypulsa")}
@@ -99,9 +105,9 @@ const CategoryCard = (props) => {
           sx={{
             width: 140,
             height: 140,
-            backgroundColor: "#113CFC",
             marginRight: 2,
             borderRadius: 3,
+            backgroundColor: "#113CFC",
           }}
           onClick={() => handleOpen("buyvoucher")}
         >
@@ -129,7 +135,6 @@ const CategoryCard = (props) => {
             width: 140,
             height: 140,
             backgroundColor: "#113CFC",
-
             borderRadius: 3,
           }}
           onClick={() => handleOpen("paypln")}

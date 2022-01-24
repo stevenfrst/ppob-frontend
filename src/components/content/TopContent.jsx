@@ -1,9 +1,10 @@
-import { Box, Typography } from "@mui/material";
-
 import CategoryCard from "../card/CategoryCard";
+
+import { Box, Typography } from "@mui/material";
 
 const TopContent = (props) => {
   const { isHome } = props;
+
   return (
     <Box
       sx={{
@@ -15,21 +16,20 @@ const TopContent = (props) => {
     >
       <Box
         sx={{
+          paddingTop: 3,
+          paddingBottom: 3,
           borderRadius: 3,
           backgroundColor: "#113CFC",
-          paddingTop: 3,
           display: "flex",
-          paddingBottom: 3,
         }}
       >
         <Box
           sx={{
             width: 225,
             height: 200,
-            color: "white",
             display: "flex",
             alignItems: "center",
-            
+            color: "white",
           }}
         >
           <Typography

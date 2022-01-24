@@ -1,15 +1,28 @@
+import React from "react";
+import { useNavigate } from "react-router-dom";
+import { useSelector } from "react-redux";
+
 import { Avatar, IconButton, Toolbar } from "@mui/material";
 import AppBar from "@mui/material/AppBar";
 import { Login } from "@mui/icons-material";
 import { Box } from "@mui/material";
-import { Link } from "react-router-dom";
-import React from "react";
-import { useSelector } from "react-redux";
 
 const Header = () => {
   const { currentUser } = useSelector((state) => state.login);
-  const {userData} = useSelector((state)=>state.user)
-  const imageLink = "https://avatars.dicebear.com/api/miniavs/"+userData?.data?.username+".svg";
+  const { userData } = useSelector((state) => state.user);
+
+  const navigate = useNavigate();
+
+  const home = ()=>{
+    navigate("/")
+  }
+  const user = ()=>{
+    navigate("/user")
+  }
+  const imageLink =
+    "https://avatars.dicebear.com/api/miniavs/" +
+    userData?.data?.username +
+    ".svg";
 
   return (
     <>
@@ -17,29 +30,32 @@ const Header = () => {
         <Toolbar sx={{ display: "flex", justifyContent: "center" }}>
           <Box
             sx={{
+              width: 450,
               display: "flex",
               alignItems: "center",
-              width: 450,
             }}
           >
             <Box>
               <img
-                src="./assets/component2.png"
+                src="http://api.stevenhoyo.co:9000/static/component2.png"
                 alt="phone logo"
                 width="120px"
+                onClick={()=>home()}
               />
             </Box>
             {currentUser?.data?.token ? (
               <Avatar
+              onClick={()=>user()}
                 alt="avatar"
                 src={imageLink}
                 sx={{ marginLeft: "auto" }}
               />
             ) : (
-              <IconButton sx={{ marginLeft: "auto", color: "white" }}>
-                <Link to="login" style={{ color: "black" }}>
-                  <Login />
-                </Link>
+              <IconButton
+                sx={{ marginLeft: "auto", color: "black" }}
+                onClick={() => navigate("/login")}
+              >
+                <Login />
               </IconButton>
             )}
           </Box>

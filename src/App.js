@@ -14,6 +14,8 @@ import TransactionSuccess from "./pages/transaction/TransactionSuccess";
 import OrderLoading from "./pages/transaction/OrderLoading";
 import User from "./pages/home/User";
 import Verification from "./pages/home/Verification";
+import History from "./pages/home/History";
+import Logout from "./pages/loginregister/Logout";
 
 function App() {
   return (
@@ -34,9 +36,10 @@ function App() {
         <Route path="paymentprocess" element={<PayLoading />}></Route>
         <Route path="success" element={<TransactionSuccess />}></Route>
         <Route path="payment/detail" element={<TransactionDetail />}></Route>
-        <Route path="orderloading" element={<OrderLoading />}></Route>
+        <Route path="logout" element={<Logout />}></Route>
         <Route path='user' element={<User/>}></Route>
         <Route path='verification' element={<Verification/>}></Route>
+        <Route path='history' element={<History/>}/>
       </Routes>
     </BrowserRouter>
   );

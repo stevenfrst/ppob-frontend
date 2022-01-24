@@ -1,20 +1,25 @@
-import { Box, CardActionArea, Grid, Typography } from "@mui/material";
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
+
 import CategoryCard from "../../components/card/CategoryCard";
 import PulsaCard from "../../components/card/PulsaCard";
-import Header2 from "../../components/navigation/Header2";
 import Text from "../../components/typography/Text";
+
 import { product } from "../../redux/productApi";
 
+import { Box, CardActionArea, Grid, Typography } from "@mui/material";
+import Header from "../../components/navigation/Header";
 const BuyPulsa = () => {
-  const dispatch = useDispatch();
-  const [pulsaType, setPulsaType] = useState("");
   const { inputPhoneNumber } = useSelector((state) => state.userLog);
   const { listProduct } = useSelector((state) => state.product);
   const { currentUser } = useSelector((state) => state.login);
+
+  const dispatch = useDispatch();
   const navigate = useNavigate();
+
+  const [pulsaType, setPulsaType] = useState("");
+
   const handleRedirect = () => {
     navigate("/login");
   };
@@ -48,7 +53,6 @@ const BuyPulsa = () => {
     ) {
       setPulsaType("Indosat");
     } else if (
-      inputPhoneNumber?.startsWith("0811") ||
       inputPhoneNumber?.startsWith("0817") ||
       inputPhoneNumber?.startsWith("0818") ||
       inputPhoneNumber?.startsWith("0819") ||
@@ -58,7 +62,6 @@ const BuyPulsa = () => {
     ) {
       setPulsaType("Xl");
     } else if (
-      inputPhoneNumber?.startsWith("0811") ||
       inputPhoneNumber?.startsWith("0838") ||
       inputPhoneNumber?.startsWith("0831") ||
       inputPhoneNumber?.startsWith("0832") ||
@@ -77,20 +80,22 @@ const BuyPulsa = () => {
       inputPhoneNumber?.startsWith("0889")
     ) {
       setPulsaType("Smartfren");
+    } else {
+      setPulsaType("Three");
     }
   }, [inputPhoneNumber]);
-  
+
   return (
     <Box>
-      <Header2></Header2>
+      <Header></Header>
 
       <Box
         sx={{
+          marginTop: 10,
           display: "flex",
           flexDirection: "column",
           justifyContent: "center",
           alignItems: "center",
-          marginTop: 10,
         }}
       >
         <CategoryCard></CategoryCard>
@@ -100,34 +105,40 @@ const BuyPulsa = () => {
           width: 450,
           height: 300,
           margin: "auto",
-          backgroundColor: "white",
           marginTop: 2,
+          backgroundColor: "white",
           display: "block",
         }}
       >
         <Box sx={{ marginTop: 3 }}>
           <Text text="Pilih Produk" />
         </Box>
-        {inputPhoneNumber?
-        <Box sx={{ width: 450, marginTop: 2 }}>
-          <Grid
-            container
-            rowSpacing={1}
-            columnSpacing={{ xs: 1, sm: 2, md: 3 }}
-          >
-            
-            {listProduct?.data
-              .filter((product) => product?.sub_category === pulsaType)
-              .map((product) => (
-                <Grid key={product?.id} item xs={6}>
-                  <PulsaCard
-                    key={product?.id}
-                    listProduct={product}
-                  ></PulsaCard>
-                </Grid>
-              ))}
-          </Grid>
-        </Box>:<Box sx={{marginTop:3}}><Typography>Silahkan Masukkan Nomor Handphone Terlebih Dahulu</Typography></Box>}
+        {inputPhoneNumber ? (
+          <Box sx={{ width: 450, marginTop: 2 }}>
+            <Grid
+              container
+              rowSpacing={1}
+              columnSpacing={{ xs: 1, sm: 2, md: 3 }}
+            >
+              {listProduct?.data
+                .filter((product) => product?.sub_category === pulsaType)
+                .map((product) => (
+                  <Grid key={product?.id} item xs={6}>
+                    <PulsaCard
+                      key={product?.id}
+                      listProduct={product}
+                    ></PulsaCard>
+                  </Grid>
+                ))}
+            </Grid>
+          </Box>
+        ) : (
+          <Box sx={{ marginTop: 3 }}>
+            <Typography>
+              Silahkan Masukkan Nomor Handphone Terlebih Dahulu
+            </Typography>
+          </Box>
+        )}
         {currentUser ? (
           <></>
         ) : (
@@ -135,16 +146,16 @@ const BuyPulsa = () => {
             onClick={() => handleRedirect()}
             sx={{
               height: 70,
-              width:450,
+              width: 450,
               backgroundColor: "#113CFC",
               color: "white",
               padding: 3,
               display: "flex",
               alignItems: "center",
               bottom: 0,
-              top:'auto',
-              position:'sticky',
-              marginTop:3
+              top: "auto",
+              position: "sticky",
+              marginTop: 3,
             }}
           >
             <Box

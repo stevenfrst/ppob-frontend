@@ -6,13 +6,13 @@ const Text = (props) => {
     <Box
       component="span"
       sx={{
+        padding: 0.5,
         border: 1,
         borderColor: "#113CFC",
-        padding: 0.5,
         borderStyle: "solid",
+        borderRadius: 2,
         backgroundColor: "#113CFC",
         color: "white",
-        borderRadius: 2,
         fontWeight: "bold",
       }}
     >

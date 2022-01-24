@@ -1,14 +1,24 @@
-import { Box, Grid, Typography } from "@mui/material";
 import { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
-import HistoryCard from "../../components/card/HistoryCard";
+import { useNavigate } from "react-router-dom";
+
 import axios from "axios";
 
+import Header from "../../components/navigation/Header";
+import BottomBar from "../../components/navigation/BottomBar";
+import HistoryCard from "../../components/card/HistoryCard";
+
+import { Box, Button, CircularProgress, Grid, Typography } from "@mui/material";
+
 const History = () => {
+  const { currentUser } = useSelector((state) => state.login);
+
+  const navigate = useNavigate();
+
   const [history, setHistory] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
-  const { currentUser } = useSelector((state) => state.login);
+
   useEffect(() => {
     const getHistory = async () => {
       setLoading(true);
@@ -25,29 +35,92 @@ const History = () => {
     };
     getHistory();
   }, [currentUser?.data?.token]);
-  console.log(history?.data?.data);
-  return (
-    <Box
-      sx={{
-        width: 450,
-        margin: "auto",
-        marginTop: 10,
-        marginBottom: 10,
-      }}
-    >
-      <Typography variant="h4">History</Typography>
-      <Box sx={{ width: 450, marginTop: 2 }}>
-        <Grid container rowSpacing={1} columnSpacing={{ xs: 1, sm: 2, md: 3 }}>
-          {history?.data?.data?.map((product) => (
-            <Grid key={product?.id} item xs={6}>
-              <HistoryCard
-                key={product?.id}
-                listHistory={product}
-              ></HistoryCard>
-            </Grid>
-          ))}
-        </Grid>
+
+  const handleLogin = () => {
+    navigate("/login");
+  };
+
+  if (loading) {
+    return (
+      <Box>
+        <Header />
+        <Box
+          sx={{
+            width: 450,
+            margin: "auto",
+            display: "flex",
+            flexDirection: "column",
+            justifyContent: "center",
+            alignItems: "center",
+            height: "100vh",
+          }}
+        >
+          <CircularProgress />
+        </Box>
+        <BottomBar currentPage={3} />
       </Box>
+    );
+  }
+
+  if (!currentUser) {
+    return (
+      <Box>
+        <Header />
+        <Box
+          sx={{
+            width: 450,
+            margin: "auto",
+            display: "flex",
+            flexDirection: "column",
+            justifyContent: "center",
+            alignItems: "center",
+            height: "100vh",
+          }}
+        >
+          <Typography>Silahkan Login Terlebih Dahulu</Typography>
+          <br />
+          <Button variant="contained" onClick={() => handleLogin()}>
+            Login
+          </Button>
+        </Box>
+        <BottomBar currentPage={3} />
+      </Box>
+    );
+  }
+  return (
+    <Box>
+      <Header />
+      <Box
+        sx={{
+          width: 450,
+          margin: "auto",
+          marginTop: 10,
+          marginBottom: 10,
+        }}
+      >
+        <Typography variant="h4">History</Typography>
+        {history ? (
+          <Box sx={{ marginTop: 2 }}>
+            <Grid
+              container
+              rowSpacing={1}
+              columnSpacing={{ xs: 1, sm: 2, md: 3 }}
+            >
+              {history?.data?.data?.map((product) => (
+                <Grid key={product?.id} item xs={6}>
+                  <HistoryCard
+                    key={product?.id}
+                    listHistory={product}
+                  ></HistoryCard>
+                </Grid>
+              ))}
+            </Grid>
+          </Box>
+        ) : (
+          <Typography sx={{ marginTop: 3 }}>Belum ada Transaksi</Typography>
+        )}
+      </Box>
+      <BottomBar currentPage={3} />
     </Box>
   );
 };

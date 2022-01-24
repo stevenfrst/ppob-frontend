@@ -1,6 +1,5 @@
 import { userRequest } from "../requestMethod";
 import { createTransactionFailure, getTransactionFailure } from "./errorSlice";
-import { isFetchingProduct } from "./productSlice";
 import { getTransactionData, getTransactionResponse, isFetchingResponse, isFetchingTransaction } from "./transactionSlice";
 
 
@@ -26,6 +25,6 @@ export const getTransaction = async(dispatch, orderID)=>{
         dispatch(isFetchingTransaction(false))
     } catch(err){
         dispatch(getTransactionFailure())
-        dispatch(isFetchingProduct(false))
+        dispatch(isFetchingTransaction(false))
     }
 }

@@ -1,25 +1,39 @@
-import { Box, Button, CircularProgress, FormControl, TextField, Typography } from "@mui/material";
-import axios from "axios";
 import { useEffect, useRef, useState } from "react";
 import { useSelector } from "react-redux";
 import { Navigate, useNavigate } from "react-router-dom";
+
+import axios from "axios";
+
 import BottomBar from "../../components/navigation/BottomBar";
 import Header from "../../components/navigation/Header";
 
+import {
+  Box,
+  Button,
+  CircularProgress,
+  FormControl,
+  TextField,
+  Typography,
+} from "@mui/material";
+
 const Verification = () => {
-  const [loading, setLoading] = useState(false);
   const { currentUser } = useSelector((state) => state.login);
+  const { userData } = useSelector((state) => state.user);
+
+  const navigate = useNavigate();
+
+  const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const [pin, setPin] = useState(0);
-  const navigate = useNavigate();
+
   const _isMounted = useRef(true);
-  const {userData} = useSelector((state)=>state.user)
-  
+
   useEffect(() => {
     return () => {
       _isMounted.current = false;
     };
   });
+
   const handleSubmit = (pin) => {
     setLoading(true);
     axios
@@ -31,51 +45,43 @@ const Verification = () => {
         }
       )
       .then((res) => {
-     
         if (res?.data?.data === "not match") {
           setError("Not Match");
-          setLoading(false)
-         
+          setLoading(false);
         } else {
           navigate("/user");
-         
-          
-          setLoading(false)
+          setLoading(false);
         }
       })
       .catch((err) => {
-  
         setError(err);
         setLoading(false);
-       
       });
   };
-  if(loading){
-    return(
+  
+  if (loading) {
+    return (
       <Box>
-      <Header></Header>
-      <Box
-        sx={{
-          width: 450,
-          margin: "auto",
-          display: "flex",
-          justifyContent: "center",
-          flexDirection: "column",
-          alignItems: "center",
-          height: "100vh",
-        }}
-      >
-          <CircularProgress/>
+        <Header></Header>
+        <Box
+          sx={{
+            width: 450,
+            margin: "auto",
+            display: "flex",
+            justifyContent: "center",
+            flexDirection: "column",
+            alignItems: "center",
+            height: "100vh",
+          }}
+        >
+          <CircularProgress />
         </Box>
-        <BottomBar/>
-        </Box>
-    
-    )
+        <BottomBar currentPage={2} />
+      </Box>
+    );
   }
-  if (userData?.data?.is_verified){
-    return(
-       <Navigate to="/" />
-    )
+  if (userData?.data?.is_verified) {
+    return <Navigate to="/" />;
   }
   return (
     <Box>
@@ -85,8 +91,8 @@ const Verification = () => {
           width: 450,
           margin: "auto",
           display: "flex",
-          justifyContent: "center",
           flexDirection: "column",
+          justifyContent: "center",
           alignItems: "center",
           height: "100vh",
         }}
@@ -99,10 +105,16 @@ const Verification = () => {
             id="outlined-basic"
             label="Code"
             variant="outlined"
-            sx={{marginBottom:1}}
+            sx={{ marginBottom: 1 }}
             onChange={(e) => setPin(e.target.value)}
           />
-          {error==="Not Match"?<Typography sx={{color:'red',  marginBottom: 2 }}>Code Tidak Sama</Typography>:<></>}
+          {error === "Not Match" ? (
+            <Typography sx={{ color: "red", marginBottom: 2 }}>
+              Code Tidak Sama
+            </Typography>
+          ) : (
+            <></>
+          )}
           <Button variant="contained" onClick={() => handleSubmit(pin)}>
             Submit
           </Button>

@@ -1,29 +1,36 @@
-import { Box, CardActionArea, Grid, Typography } from "@mui/material";
 import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
+
 import CategoryCard from "../../components/card/CategoryCard";
 import VoucherCard from "../../components/card/VoucherCard";
-import Header2 from "../../components/navigation/Header2";
 import Text from "../../components/typography/Text";
 import { product } from "../../redux/productApi";
+
 import _ from "lodash";
+
 import { useNavigate } from "react-router-dom";
 
+import { Box, CardActionArea, Grid, Typography } from "@mui/material";
+import Header from "../../components/navigation/Header";
+
 const BuyVoucher = () => {
-  const dispatch = useDispatch();
   const { listProduct } = useSelector((state) => state.product);
   const { currentUser } = useSelector((state) => state.login);
   const { inputPhoneNumber } = useSelector((state) => state.userLog);
+
+  const dispatch = useDispatch();
   const navigate = useNavigate();
+
   const handleRedirect = () => {
     navigate("/login");
   };
   useEffect(() => {
     product(dispatch, 2);
   }, [dispatch]);
+
   return (
     <Box>
-      <Header2></Header2>
+      <Header></Header>
       <Box
         sx={{
           display: "flex",
@@ -76,7 +83,6 @@ const BuyVoucher = () => {
         {currentUser ? (
           <></>
         ) : (
-          
           <CardActionArea
             onClick={() => handleRedirect()}
             sx={{
@@ -90,7 +96,7 @@ const BuyVoucher = () => {
               bottom: 0,
               top: "auto",
               marginTop: 3,
-              position:'sticky'
+              position: "sticky",
             }}
           >
             <Box
@@ -106,7 +112,6 @@ const BuyVoucher = () => {
               <Typography>Login untuk Melanjutkan Pembelian</Typography>
             </Box>
           </CardActionArea>
-          
         )}
       </Box>
     </Box>

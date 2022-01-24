@@ -1,3 +1,14 @@
+import { useState } from "react";
+import { useSelector } from "react-redux";
+
+import axios from "axios";
+
+import moment from "moment";
+
+import Text from "../../components/typography/Text";
+import Detail from "../typography/Detail";
+import Text2 from "../typography/Text2";
+
 import {
   Avatar,
   Box,
@@ -7,30 +18,27 @@ import {
   Modal,
   Typography,
 } from "@mui/material";
-import Text from "../../components/typography/Text";
-import { useSelector } from "react-redux";
-import moment from "moment";
-import { useState } from "react";
-import Detail from "../typography/Detail";
-import Text2 from "../typography/Text2";
-import axios from "axios";
+
 const HistoryCard = (props) => {
   const { listHistory } = props;
+
+  const { currentUser } = useSelector((state) => state.login);
+
   const [open, setOpen] = useState(false);
+  const [history, setHistory] = useState("");
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(false);
+
   function numberWithCommas(x) {
     return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".");
   }
   const totalPrice = numberWithCommas(listHistory?.total);
 
-  const { currentUser } = useSelector((state) => state.login);
-  const date = moment(listHistory?.created_at).format("LL");
+  const date = moment(listHistory?.created_at).format("DD MMM YYYY");
   const newDate = moment.utc(listHistory?.created_at);
   const localDate = moment(newDate).local().format("DD-MM-YYYY, h:mm:ss");
-  const [history, setHistory] = useState("");
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState(false);
 
-  const handleClick = (orderID) => {
+  const handleClick = () => {
     const getHistory = async () => {
       setLoading(true);
       try {
@@ -50,7 +58,7 @@ const HistoryCard = (props) => {
     getHistory();
     setOpen(true);
   };
-  console.log(history);
+
   return (
     <>
       <Box
@@ -60,10 +68,9 @@ const HistoryCard = (props) => {
         }}
       >
         <CardActionArea
-          disabled={!currentUser?.data?.token}
           sx={{
-            borderRadius: 3,
             padding: 1,
+            borderRadius: 3,
           }}
           onClick={() => handleClick()}
         >
@@ -71,7 +78,7 @@ const HistoryCard = (props) => {
             <Avatar
               alt={listHistory?.product_name}
               src={listHistory?.image_url}
-              sx={{ marginRight: 3, width: 50, height: 50 }}
+              sx={{ width: 50, height: 50, marginRight: 3 }}
             ></Avatar>
             <Box>
               <Typography variant="h6" sx={{ fontWeight: "bold" }}>
@@ -86,7 +93,7 @@ const HistoryCard = (props) => {
         <Container
           sx={(theme) => ({
             width: 450,
-            height: 610,
+            height: 650,
             backgroundColor: "white",
             position: "absolute",
             top: 0,
@@ -122,6 +129,7 @@ const HistoryCard = (props) => {
               </Box>
 
               <Detail label="Order ID" value={history?.data?.id} />
+              <Detail label="Kode Bayar" value={history?.data?.link} />
               <Detail label="Nama Produk" value={history?.data?.product_name} />
               <Detail
                 label="Harga"
@@ -147,13 +155,13 @@ const HistoryCard = (props) => {
               />
               <Box
                 sx={{
-                  display: "flex",
-                  marginTop: 2,
                   width: 400,
+                  marginTop: 2,
                   paddingBottom: 1,
+                  display: "flex",
                 }}
               >
-                <Box sx={{ display: "flex", width: 150 }}>
+                <Box sx={{ width: 150, display: "flex" }}>
                   <Typography>Waktu Order</Typography>
                   <Typography sx={{ marginLeft: "auto", fontWeight: "bold" }}>
                     :

@@ -1,24 +1,24 @@
-import { Box, Fab } from "@mui/material";
 import Text from "../typography/Text";
+import { Box, Fab } from "@mui/material";
 
 const BottomContent = () => {
   return (
     <Box
       sx={{
         height: 300,
-        backgroundColor: "white",
         marginTop: 2,
+        backgroundColor: "white",
         display: "block",
       }}
     >
       <Text text="Produk Teratas" />
       <Box
         sx={{
-          display: "flex",
-          justifyContent: "space-between",
           marginLeft: "25px",
           marginRight: "25px",
           marginTop: "25px",
+          display: "flex",
+          justifyContent: "space-between",
         }}
       >
         <Fab sx={{ width: 70, height: 70 }}></Fab>
@@ -28,11 +28,11 @@ const BottomContent = () => {
       </Box>
       <Box
         sx={{
-          display: "flex",
-          justifyContent: "space-between",
           marginLeft: "25px",
           marginRight: "25px",
           marginTop: "25px",
+          display: "flex",
+          justifyContent: "space-between",
         }}
       >
         <Fab sx={{ width: 70, height: 70 }}></Fab>

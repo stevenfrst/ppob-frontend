@@ -1,18 +1,23 @@
+//react and redux
+import { useNavigate } from "react-router-dom";
+import { useEffect, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
+
 //mui
 import { Box, Link, Typography } from "@mui/material";
 import { styled } from "@mui/material/styles";
 import Button from "@mui/material/Button";
 import { yellow } from "@mui/material/colors";
 
-//react and redux
-import { useNavigate } from "react-router-dom";
-import { useEffect, useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
-
 //call backend
 import { register } from "../../redux/loginRegisterApi";
 
 const Register = () => {
+  const { registerError } = useSelector((state) => state.error);
+
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+
   const [data, setData] = useState({
     username: "",
     email: "",
@@ -27,11 +32,9 @@ const Register = () => {
     phone_number: "",
     repassword: "",
   });
+
   const regexEmail = /^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.\w{2,3})+$/;
   const regexPhone = /^08[1-9][0-9]{6,9}$/;
-
-  const dispatch = useDispatch();
-  const { registerError } = useSelector((state) => state.error);
 
   const handleChange = (e) => {
     const name = e.target.name;
@@ -91,8 +94,6 @@ const Register = () => {
     }
   };
 
-  const navigate = useNavigate();
-
   const handleClick = () => {
     if (
       !data.username &&
@@ -130,17 +131,17 @@ const Register = () => {
     }
   };
 
-  const ColorButton = styled(Button)(({ theme }) => ({
-    color: "#113CFC",
-    fontWeight: "bold",
+  const ColorButton = styled(Button)(() => ({
     width: "320px",
+    marginBottom: "10px",
     padding: "10px",
     borderRadius: "10px",
-    marginBottom: "10px",
     backgroundColor: yellow[500],
     "&:hover": {
       backgroundColor: yellow[700],
     },
+    color: "#113CFC",
+    fontWeight: "bold",
   }));
 
   useEffect(() => {
@@ -157,20 +158,17 @@ const Register = () => {
 
   return (
     <Box
-      sx={(theme) => ({
+      sx={() => ({
         width: 450,
-        backgroundColor: "#113CFC",
+        height: "100vh",
         margin: "auto",
+        backgroundColor: "#113CFC",
         color: "white",
         textAlign: "center",
-        height: "100vh",
         display: "flex",
+        flexDirection: "column",
         alignItems: "center",
         justifyContent: "center",
-        [theme.breakpoints.down("sm")]: {
-          width: "100vw",
-        },
-        flexDirection: "column",
       })}
     >
       <Typography variant="h3" style={{ marginBottom: "30px" }}>
@@ -186,11 +184,11 @@ const Register = () => {
         <input
           style={{
             height: "20px",
-            marginBottom: "20px",
-            borderRadius: "10px",
-            padding: "10px",
-            borderColor: "transparent",
             width: "300px",
+            marginBottom: "20px",
+            padding: "10px",
+            borderRadius: "10px",
+            borderColor: "transparent",
           }}
           type="text"
           name="username"
@@ -209,11 +207,11 @@ const Register = () => {
         <input
           style={{
             height: "20px",
-            marginBottom: "20px",
-            borderRadius: "10px",
-            padding: "10px",
-            borderColor: "transparent",
             width: "300px",
+            marginBottom: "20px",
+            padding: "10px",
+            borderRadius: "10px",
+            borderColor: "transparent",
           }}
           type="text"
           name="phone_number"
@@ -232,11 +230,11 @@ const Register = () => {
         <input
           style={{
             height: "20px",
+            width: "300px",
+            padding: "10px",
             marginBottom: "20px",
             borderRadius: "10px",
-            padding: "10px",
             borderColor: "transparent",
-            width: "300px",
           }}
           type="text"
           name="email"

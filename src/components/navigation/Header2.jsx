@@ -6,26 +6,27 @@ import { useNavigate } from "react-router-dom";
 
 import React from "react";
 const Header2 = () => {
-  const navigate = useNavigate()
+  const navigate = useNavigate();
   return (
     <>
       <AppBar sx={{ backgroundColor: "white", position: "fixed" }}>
         <Toolbar sx={{ display: "flex", justifyContent: "center" }}>
           <Box
             sx={{
+              width: 450,
               display: "flex",
               alignItems: "center",
-              width: 450,
             }}
           >
-            <IconButton sx={{ color: "black" }} onClick={()=>navigate(-1)}>
+            <IconButton sx={{ color: "black" }} onClick={() => navigate(-1)}>
               <ArrowBack />
             </IconButton>
 
-            <IconButton sx={{ marginLeft: "auto", color: "black" }} onClick={()=>navigate('/login')} >
-              
-                <Login />
-           
+            <IconButton
+              sx={{ marginLeft: "auto", color: "black" }}
+              onClick={() => navigate("/login")}
+            >
+              <Login />
             </IconButton>
           </Box>
         </Toolbar>

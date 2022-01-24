@@ -8,15 +8,15 @@ const History = () => {
 
       <Box
         sx={{
-          display: "flex",
           width: 450,
-          backgroundColor: "white",
           margin: "auto",
-          justifyContent: "space-between",
           paddingTop: 1,
+          backgroundColor: "white",
+          display: "flex",
+          justifyContent: "space-between",
         }}
       >
-        <Box sx={{ textAlign: "Right", padding: 2, width: 250 }}>
+        <Box sx={{ padding: 2, width: 250, textAlign: "Right" }}>
           <Typography
             variant="h5"
             sx={{
@@ -32,11 +32,11 @@ const History = () => {
         <Box
           sx={{
             width: 200,
-            display: "flex",
-            alignItems: "center",
+            marginRight: 1,
             padding: 1,
             borderRadius: 5,
-            marginRight: 1,
+            display: "flex",
+            alignItems: "center",
           }}
         >
           <img

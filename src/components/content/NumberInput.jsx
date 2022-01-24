@@ -1,16 +1,24 @@
-import { Login } from "@mui/icons-material";
-import { Box, IconButton, TextField, Typography } from "@mui/material";
 import { useState } from "react";
-import { saveInputPhoneNumber, saveInputPLN } from "../../redux/userLogSlice";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 
+import { saveInputPhoneNumber, saveInputPLN } from "../../redux/userLogSlice";
+
+import { Login } from "@mui/icons-material";
+import { Box, IconButton, TextField, Typography } from "@mui/material";
+
 const NumberInput = (props) => {
-  const { type } = props;  
-  const {inputPhoneNumber} = useSelector((state)=>state.userLog)
-  const {inputPLN} = useSelector((state)=>state.userLog)
-  const [input, setInput] = useState(type !=='paypln'?inputPhoneNumber:inputPLN);
+  const { type } = props;
+
+  const { inputPhoneNumber } = useSelector((state) => state.userLog);
+  const { inputPLN } = useSelector((state) => state.userLog);
+
+  const [input, setInput] = useState(
+    type !== "paypln" ? inputPhoneNumber : inputPLN
+  );
+
   const [error, setError] = useState("");
+
   const dispatch = useDispatch();
 
   const regexPhone = /^08[1-9][0-9]{6,9}$/;
@@ -18,7 +26,7 @@ const NumberInput = (props) => {
   const link = "/" + type;
 
   const navigate = useNavigate();
-  
+
   const handleChange = (e) => {
     setInput(e.target.value);
     setError("");
@@ -34,30 +42,28 @@ const NumberInput = (props) => {
         dispatch(saveInputPhoneNumber(input));
         navigate(link);
       }
-    } else{
+    } else {
       if (!input) {
         setError("Input masih kosong");
-      } else if (error ===""){
-        dispatch(saveInputPLN(input))
-        navigate(link)
+      } else if (error === "") {
+        dispatch(saveInputPLN(input));
+        navigate(link);
       }
-      
-    } 
-    
+    }
   };
 
   return (
-    <Box sx={{ marginTop: 3, width: 450 }}>
+    <Box sx={{ width: 450, marginTop: 3 }}>
       <Box
         component="span"
         sx={{
-          border: 1,
-          borderColor: "#113CFC",
           padding: 0.5,
+          border: 1,
+          borderRadius: 2,
+          borderColor: "#113CFC",
           borderStyle: "solid",
           backgroundColor: "#113CFC",
           color: "white",
-          borderRadius: 2,
           fontWeight: "bold",
         }}
       >
@@ -66,12 +72,12 @@ const NumberInput = (props) => {
 
       <Box
         sx={{
+          width: 450,
+          mt: 2,
           display: "flex",
           flexDirection: "column",
           justifyContent: "center",
           alignItems: "center",
-          mt: 2,
-          width: 450,
         }}
       >
         <Typography
@@ -87,6 +93,9 @@ const NumberInput = (props) => {
         <Box
           sx={{
             width: 450,
+            height: 70,
+            paddingTop: 1,
+            paddingBottom: 1,
             backgroundColor: "white",
             borderRadius: 5,
             borderWidth: 1,
@@ -94,11 +103,8 @@ const NumberInput = (props) => {
             borderColor: "#113CFC",
             display: "flex",
             justifyContent: "space-between",
-            height: 70,
-            color: "white",
             alignItems: "center",
-            paddingTop: 1,
-            paddingBottom: 1,
+            color: "white",
           }}
           style={error ? { borderColor: "red" } : { borderColor: "#113CFC" }}
         >
