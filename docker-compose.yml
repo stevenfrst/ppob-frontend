@@ -1,0 +1,10 @@
+version: '3.7'
+services:
+  gesek:
+    image: stevenfrst/ppob-frontend:latest
+    networks:
+      - web
+
+networks:
+  web:
+    external: true
