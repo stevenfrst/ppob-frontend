@@ -37,7 +37,7 @@ const Header = () => {
           >
             <Box>
               <img
-                src="http://api.stevenhoyo.co:9000/static/component2.png"
+                src="https://app.stevenhoyo.co/static/component2.png"
                 alt="phone logo"
                 width="120px"
                 onClick={()=>home()}
