@@ -80,7 +80,9 @@ const BuyVoucher = () => {
             </Typography>
           </Box>
         )}
-        {currentUser ? (
+       
+      </Box>
+      {currentUser ? (
           <></>
         ) : (
           <CardActionArea
@@ -88,15 +90,18 @@ const BuyVoucher = () => {
             sx={{
               height: 70,
               width: 450,
+              margin:'auto',
               backgroundColor: "#113CFC",
               color: "white",
               padding: 3,
               display: "flex",
               alignItems: "center",
               bottom: 0,
+              right:0,
+              left:0,
               top: "auto",
-              marginTop: 3,
               position: "sticky",
+              marginTop: 3,
             }}
           >
             <Box
@@ -113,7 +118,6 @@ const BuyVoucher = () => {
             </Box>
           </CardActionArea>
         )}
-      </Box>
     </Box>
   );
 };

@@ -1,4 +1,4 @@
-import { useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Navigate, useNavigate } from "react-router-dom";
 
@@ -20,9 +20,7 @@ import Radio from "@mui/material/Radio";
 
 import axios from "axios";
 
-import {
-  getTransactionResponse,
-} from "../../redux/transactionSlice";
+import { getTransactionResponse } from "../../redux/transactionSlice";
 import { createTransactionFailure } from "../../redux/errorSlice";
 import Header from "../../components/navigation/Header";
 
@@ -31,9 +29,17 @@ const ChoosePayment = () => {
   const { orderID } = useSelector((state) => state.userLog);
   const { selectedProduct } = useSelector((state) => state.userLog);
   const { createTransactionError } = useSelector((state) => state.error);
-  
+
   const dispatch = useDispatch();
   const navigate = useNavigate();
+
+  const _isMounted = useRef(true);
+
+  useEffect(() => {
+    return () => {
+      _isMounted.current = false;
+    };
+  }, []);
 
   const [selectedValue, setSelectedValue] = useState("");
   const [openSnackBar, setOpenSnackBar] = useState(false);
@@ -61,15 +67,26 @@ const ChoosePayment = () => {
         `https://api.stevenhoyo.co/v1/payment/va/`,
         data,
         {
-          headers: { Authorization: `Bearer ${currentUser?.data?.token}` },
+          headers: {
+            Authorization: `Bearer ${currentUser?.data?.token}`,
+          },
         }
       );
-      dispatch(getTransactionResponse(res?.data));
-      setLoading(false);
-      navigate("/payment");
+      if (_isMounted) {
+        dispatch(getTransactionResponse(res?.data));
+        setLoading(false);
+        navigate("/payment");
+      }
     } catch (err) {
-      dispatch(createTransactionFailure());
-      setLoading(false);
+      if (err?.response?.status === 403) {
+        if (_isMounted) {
+          navigate("/tokenexpired");
+          setLoading(false);
+        } else {
+          dispatch(createTransactionFailure());
+          setLoading(false);
+        }
+      }
     }
   };
 
@@ -99,6 +116,7 @@ const ChoosePayment = () => {
   const handleRedirect = () => {
     navigate("/");
   };
+
   if (!currentUser) {
     return <Navigate to="/" />;
   }
@@ -128,7 +146,7 @@ const ChoosePayment = () => {
       </Box>
     );
   }
- 
+
   return (
     <Box>
       <Header></Header>
@@ -302,7 +320,6 @@ const ChoosePayment = () => {
                     />
                   </Box>
                 </Box>
-                
               </Box>
               <Box
                 sx={{
@@ -396,11 +413,11 @@ const ChoosePayment = () => {
             >
               <Alert
                 onClose={handleClose}
-                severity="info"
+                severity={createTransactionError ? "error" : "info"}
                 sx={{ width: "100%" }}
               >
                 {createTransactionError
-                  ? "Terjadi Kesalahan, Silahkan Refresh Halaman"
+                  ? "Terjadi Kesalahan, Silahkan Coba Lagi Nanti"
                   : "Pilih Pembayaran Terlebih Dahulu"}
               </Alert>
             </Snackbar>

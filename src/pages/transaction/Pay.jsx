@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 
@@ -13,6 +13,7 @@ import {
   Button,
   CardActionArea,
   IconButton,
+  Snackbar,
   Tooltip,
   Typography,
 } from "@mui/material";
@@ -23,8 +24,16 @@ import {
 import { getTransactionFailure } from "../../redux/errorSlice";
 import axios from "axios";
 import Header from "../../components/navigation/Header";
+import MuiAlert from "@mui/material/Alert";
+import { loginSuccess } from "../../redux/loginSlice";
+import moment from "moment";
 
 const Pay = () => {
+  const [openAlert, setOpenAlert] = useState(false);
+  const Alert = React.forwardRef(function Alert(props, ref) {
+    return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />;
+  });
+
   const { currentUser } = useSelector((state) => state.login);
   const { transactionData } = useSelector((state) => state.transaction);
   const { orderIDPayment } = useSelector((state) => state.userLog);
@@ -37,6 +46,9 @@ const Pay = () => {
   }
   const totalPrice = numberWithCommas(transactionData?.data?.total);
 
+  const newDate = moment.utc(transactionData?.data?.created_at).add(1, 'days');
+  const localDate = moment(newDate).local().format("DD-MM-YYYY, h:mm:ss");
+  
   useEffect(() => {
     const getTransaction = async () => {
       dispatch(isFetchingTransaction(true));
@@ -50,12 +62,19 @@ const Pay = () => {
         dispatch(getTransactionData(res?.data));
         dispatch(isFetchingTransaction(false));
       } catch (err) {
-        dispatch(getTransactionFailure());
-        dispatch(isFetchingTransaction(false));
+        if (err?.response?.status === 403) {
+          dispatch(loginSuccess(null));
+          navigate("/tokenexpired");
+          isFetchingTransaction(false);
+        } else {
+          setOpenAlert(true);
+          dispatch(getTransactionFailure());
+          dispatch(isFetchingTransaction(false));
+        }
       }
     };
     getTransaction();
-  }, [currentUser?.data?.token, dispatch, orderIDPayment]);
+  }, [currentUser?.data?.token, dispatch, orderIDPayment, navigate]);
 
   const handleRedirect = () => {
     navigate("/payment/detail");
@@ -67,6 +86,13 @@ const Pay = () => {
 
   const handleNullID = () => {
     navigate("/");
+  };
+  const handleClose = (event, reason) => {
+    if (reason === "clickaway") {
+      return;
+    }
+
+    setOpenAlert(false);
   };
 
   if (!orderIDPayment) {
@@ -113,10 +139,10 @@ const Pay = () => {
           }}
         >
           <Box sx={{ textAlign: "center", marginTop: 3 }}>
-            <Typography>Transaksi Anda Berakhir Pada</Typography>
+            <Typography sx={{mb:1}}>Mohon Bayar Sebelum</Typography>
           </Box>
           <Box sx={{ textAlign: "center" }}>
-            <Typography variant="h3">59:58:01</Typography>
+            <Typography variant="h4">{localDate}</Typography>
           </Box>
         </Box>
 
@@ -226,12 +252,12 @@ const Pay = () => {
             </li>
             <li>
               <Typography variant="body">
-                Pada kolom nominal isikan sesuai nominal transaksi kamu.
+                Cek data, sesuaikan dengan data pembayaran kamu
               </Typography>
             </li>
             <li>
               <Typography variant="body">
-                Setelah dikirim, jangan lupa screenshot bukti pembayaran kamu !
+                Klik bayar untuk melakukan pembayaran
               </Typography>
             </li>
           </ol>
@@ -265,6 +291,16 @@ const Pay = () => {
           </Box>
         </CardActionArea>
       </Box>
+      <Snackbar
+        open={openAlert}
+        autoHideDuration={4000}
+        onClose={handleClose}
+        anchorOrigin={{ vertical: "bottom", horizontal: "left" }}
+      >
+        <Alert onClose={handleClose} severity="error" sx={{ width: "100%" }}>
+          Terjadi error, silahkan coba lagi nanti
+        </Alert>
+      </Snackbar>
     </Box>
   );
 };

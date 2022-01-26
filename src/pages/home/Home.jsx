@@ -1,5 +1,7 @@
 import { useDispatch, useSelector } from "react-redux";
-import { useEffect } from "react";
+import React, { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
+
 import axios from "axios";
 
 import { getUserData, isFetchingUser } from "../../redux/userSlice";
@@ -10,11 +12,31 @@ import BottomContent from "../../components/content/BottomContent";
 import Header from "../../components/navigation/Header";
 import BottomBar from "../../components/navigation/BottomBar";
 
-import { Box } from "@mui/material";
+import { Box, Snackbar } from "@mui/material";
+import { loginSuccess } from "../../redux/loginSlice";
+
+import MuiAlert from "@mui/material/Alert";
+
+
 const Home = () => {
+  const [openAlert, setOpenAlert] = useState(false);
+  const Alert = React.forwardRef(function Alert(props, ref) {
+    return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />;
+  });
+
   const { currentUser } = useSelector((state) => state.login);
+  
 
   const dispatch = useDispatch();
+  const navigate = useNavigate();
+
+  const handleClose = (event, reason) => {
+    if (reason === "clickaway") {
+      return;
+    }
+
+    setOpenAlert(false);
+  };
   
   useEffect(() => {
     if (currentUser?.data?.token) {
@@ -27,13 +49,20 @@ const Home = () => {
           dispatch(getUserData(res?.data));
           dispatch(isFetchingUser(false));
         } catch (err) {
-          dispatch(getUserFailure());
-          dispatch(isFetchingUser(false));
+          if (err?.response?.status === 403) {
+            dispatch(loginSuccess(null));
+            navigate("/tokenexpired");
+            dispatch(isFetchingUser(false));
+          } else {
+            setOpenAlert(true);
+            dispatch(getUserFailure());
+            dispatch(isFetchingUser(false));
+          }
         }
       };
       getUser();
     }
-  }, [currentUser?.data?.token, dispatch]);
+  }, [currentUser?.data?.token, dispatch, navigate]);
 
   return (
     <Box>
@@ -43,13 +72,23 @@ const Home = () => {
           width: 450,
           margin: "auto",
           marginTop: 10,
-          marginBottom: 10,
+          marginBottom: 3,
         }}
       >
         <TopContent isHome={true} />
         <BottomContent />
       </Box>
       <BottomBar currentPage={1} />
+      <Snackbar
+        open={openAlert}
+        autoHideDuration={4000}
+        onClose={handleClose}
+        anchorOrigin={{ vertical: "bottom", horizontal: "left" }}
+      >
+        <Alert onClose={handleClose} severity="error" sx={{ width: "100%" }}>
+          Terjadi error, silahkan coba lagi nanti
+        </Alert>
+      </Snackbar>
     </Box>
   );
 };

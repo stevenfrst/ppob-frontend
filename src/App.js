@@ -9,12 +9,11 @@ import VoucherNominal from "./pages/product/VoucherNominal";
 import ChoosePayment from "./pages/transaction/ChoosePayment";
 import Pay from "./pages/transaction/Pay";
 import TransactionDetail from "./pages/transaction/TransactionDetail";
-import PayLoading from "./pages/transaction/PayLoading";
-import TransactionSuccess from "./pages/transaction/TransactionSuccess";
 import User from "./pages/home/User";
 import Verification from "./pages/home/Verification";
 import History from "./pages/home/History";
 import Logout from "./pages/loginregister/Logout";
+import InvalidToken from "./pages/home/InvalidToken";
 
 function App() {
   return (
@@ -32,13 +31,12 @@ function App() {
         <Route path="paypln" element={<PayPLN />}></Route>
         <Route path="choosepayment" element={<ChoosePayment />}></Route>
         <Route path="payment" element={<Pay />}></Route>
-        <Route path="paymentprocess" element={<PayLoading />}></Route>
-        <Route path="success" element={<TransactionSuccess />}></Route>
         <Route path="payment/detail" element={<TransactionDetail />}></Route>
         <Route path="logout" element={<Logout />}></Route>
         <Route path='user' element={<User/>}></Route>
         <Route path='verification' element={<Verification/>}></Route>
         <Route path='history' element={<History/>}/>
+        <Route path="tokenexpired" element={<InvalidToken/>}/>
       </Routes>
     </BrowserRouter>
   );
