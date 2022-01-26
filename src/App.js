@@ -11,7 +11,6 @@ import Pay from "./pages/transaction/Pay";
 import TransactionDetail from "./pages/transaction/TransactionDetail";
 import PayLoading from "./pages/transaction/PayLoading";
 import TransactionSuccess from "./pages/transaction/TransactionSuccess";
-import OrderLoading from "./pages/transaction/OrderLoading";
 import User from "./pages/home/User";
 import Verification from "./pages/home/Verification";
 import History from "./pages/home/History";

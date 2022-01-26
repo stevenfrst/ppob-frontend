@@ -302,6 +302,53 @@ const ChoosePayment = () => {
                     />
                   </Box>
                 </Box>
+                
+              </Box>
+              <Box
+                sx={{
+                  display: "flex",
+                  flexDirection: "column",
+                  marginTop: 3,
+                  width: 450,
+                  borderBottom: 1,
+                  borderColor: "rgba(0,0,0,30%)",
+                  paddingBottom: 2,
+                }}
+              >
+                <Box sx={{ display: "flex", alignItems: "center" }}>
+                  <Box></Box>
+                  <Box
+                    sx={{
+                      width: "45px",
+                      height: "45px",
+                      background: "url(./assets/bri.png)",
+                      borderRadius: 3,
+                      backgroundRepeat: "no-repeat",
+                      backgroundPosition: "center",
+                      backgroundSize: "100%",
+                      marginRight: 3,
+                      marginLeft: 3,
+                    }}
+                  ></Box>
+                  <Box>
+                    <Typography variant="h6">Virtual Account BRI</Typography>
+                  </Box>
+                  <Box sx={{ marginLeft: "auto" }}>
+                    <Radio
+                      checked={selectedValue === "bri"}
+                      onChange={handleChange}
+                      value="bri"
+                      name="radio-buttons"
+                      inputProps={{ "aria-label": "bri" }}
+                      sx={{
+                        color: "black",
+                        "&.Mui-checked": {
+                          color: "black",
+                        },
+                      }}
+                    />
+                  </Box>
+                </Box>
               </Box>
             </Box>
 
