@@ -181,6 +181,16 @@ const Login = () => {
         )}
       </Typography>
       <Typography>
+      <Link
+          underline="hover"
+          style={{ color: "yellow", fontWeight: "bold" }}
+          onClick={() => navigate("/forgotpassword")}
+        >
+          Lupa Password?
+        </Link>
+      </Typography>
+      <br/>
+      <Typography>
         Belum punya akun?{" "}
         <Link
           underline="hover"
