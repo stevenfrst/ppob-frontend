@@ -25,7 +25,7 @@ const RecentHistory = (props) => {
   const localDate = moment(newDate).local().format("DD MMM YYYY");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(false);
-  const idVoucher = listHistory?.id % 100;
+  const idVoucher = (listHistory?.id % 100)+1;
   const handleClick = () => {
     const getHistory = async () => {
       setLoading(true);
