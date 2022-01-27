@@ -14,6 +14,7 @@ import Verification from "./pages/home/Verification";
 import History from "./pages/home/History";
 import Logout from "./pages/loginregister/Logout";
 import InvalidToken from "./pages/home/InvalidToken";
+import { ForgotPassword } from "./pages/loginregister/ForgotPassword";
 
 function App() {
   return (
@@ -37,6 +38,8 @@ function App() {
         <Route path='verification' element={<Verification/>}></Route>
         <Route path='history' element={<History/>}/>
         <Route path="tokenexpired" element={<InvalidToken/>}/>
+        <Route path="forgotpassword" element={<ForgotPassword/>}/>
+
       </Routes>
     </BrowserRouter>
   );
