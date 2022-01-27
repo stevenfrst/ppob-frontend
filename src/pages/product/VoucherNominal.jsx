@@ -1,5 +1,5 @@
-import { Box, Button, Grid } from "@mui/material";
-import { useEffect } from "react";
+import { Box, Button, CardActionArea, Grid, Typography } from "@mui/material";
+import React, { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import CategoryCard from "../../components/card/CategoryCard";
@@ -11,6 +11,7 @@ import { product } from "../../redux/productApi";
 
 const VoucherNominal = () => {
   const dispatch = useDispatch();
+  const { currentUser } = useSelector((state) => state.login);
   const { listProduct } = useSelector((state) => state.product);
   const { selectedVoucher } = useSelector((state) => state.userLog);
   const navigate = useNavigate();
@@ -20,6 +21,7 @@ const VoucherNominal = () => {
   useEffect(() => {
     product(dispatch, 2);
   }, [dispatch]);
+
   return (
     <Box>
       <Header></Header>
@@ -82,6 +84,42 @@ const VoucherNominal = () => {
           </Box>
         )}
       </Box>
+      {currentUser ? (
+        <></>
+      ) : (
+        <CardActionArea
+          onClick={() => navigate("/login")}
+          sx={{
+            height: 70,
+            width: 450,
+            margin: "auto",
+            backgroundColor: "#113CFC",
+            color: "white",
+            padding: 3,
+            display: "flex",
+            alignItems: "center",
+            bottom: 0,
+            right: 0,
+            left: 0,
+            top: "auto",
+            position: "sticky",
+            marginTop: 3,
+          }}
+        >
+          <Box
+            sx={{
+              width: 300,
+              borderStyle: "solid",
+              borderColor: "white",
+              borderRadius: 5,
+              textAlign: "center",
+              padding: 1,
+            }}
+          >
+            <Typography>Login untuk Melanjutkan Pembelian</Typography>
+          </Box>
+        </CardActionArea>
+      )}
     </Box>
   );
 };

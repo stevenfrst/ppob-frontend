@@ -1,10 +1,10 @@
-import { useEffect, useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 
 import axios from "axios";
 
-import {loginSuccess} from '../../redux/loginSlice'
+import { loginSuccess } from "../../redux/loginSlice";
 
 import Header from "../../components/navigation/Header";
 import BottomBar from "../../components/navigation/BottomBar";
@@ -16,13 +16,19 @@ import {
   Link,
   Typography,
   Button,
+  Snackbar,
 } from "@mui/material";
-
+import MuiAlert from "@mui/material/Alert";
 const User = () => {
+  const [openAlert, setOpenAlert] = useState(false);
+  const Alert = React.forwardRef(function Alert(props, ref) {
+    return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />;
+  });
+
   const { currentUser } = useSelector((state) => state.login);
   const { userData } = useSelector((state) => state.user);
 
-  const dispatch = useDispatch()
+  const dispatch = useDispatch();
   const navigate = useNavigate();
 
   const [error, setError] = useState("");
@@ -59,8 +65,15 @@ const User = () => {
       })
       .catch((err) => {
         if (_isMounted) {
-          setLoading(false);
-          setError(err);
+          if (err?.response?.status === 403) {
+            dispatch(loginSuccess(null));
+            navigate("/tokenexpired");
+            setLoading(false);
+          } else {
+            setOpenAlert(true);
+            setError(err);
+            setLoading(false);
+          }
         }
       });
   };
@@ -69,10 +82,17 @@ const User = () => {
     navigate("/login");
   };
 
-  const handleLogout = ()=>{
-    dispatch(loginSuccess(null))
-    navigate("/logout")
-  }
+  const handleLogout = () => {
+    dispatch(loginSuccess(null));
+    navigate("/logout");
+  };
+  const handleClose = (event, reason) => {
+    if (reason === "clickaway") {
+      return;
+    }
+
+    setOpenAlert(false);
+  };
   if (loading) {
     return (
       <Box>
@@ -98,7 +118,7 @@ const User = () => {
   if (!currentUser) {
     return (
       <Box>
-        <Header/>
+        <Header />
         <Box
           sx={{
             width: 450,
@@ -116,13 +136,13 @@ const User = () => {
             Login
           </Button>
         </Box>
-        <BottomBar currentPage={2}/>
+        <BottomBar currentPage={2} />
       </Box>
     );
   }
   return (
     <Box>
-      <Header/>
+      <Header />
       <Box
         sx={{
           width: 450,
@@ -152,7 +172,7 @@ const User = () => {
                 display: "flex",
                 justifyContent: "space-between",
                 width: 150,
-                marginRight: 2,   
+                marginRight: 2,
               }}
             >
               <Typography>Username</Typography>
@@ -181,9 +201,7 @@ const User = () => {
           {userData?.data?.is_verified ? (
             <></>
           ) : (
-            <Box
-              sx={{ display: "flex", marginBottom: 2 }}
-            >
+            <Box sx={{ display: "flex", marginBottom: 2 }}>
               <Box
                 sx={{
                   display: "flex",
@@ -203,7 +221,7 @@ const User = () => {
                   (Verifikasi Sekarang!)
                 </Link>
                 {error ? (
-                  <Typography>Terjadi Error, coba lagi</Typography>
+                  <Typography>Terjadi Error, coba lagi nanti</Typography>
                 ) : (
                   <></>
                 )}
@@ -227,10 +245,26 @@ const User = () => {
               <Typography>{userData?.data?.phoneNumber}</Typography>
             </Box>
           </Box>
-          <Button variant="contained" sx={{marginTop:3}} onClick={()=>handleLogout()}>Logout</Button>
+          <Button
+            variant="contained"
+            sx={{ marginTop: 3 }}
+            onClick={() => handleLogout()}
+          >
+            Logout
+          </Button>
         </Box>
       </Box>
-      <BottomBar currentPage={2}/>
+      <BottomBar currentPage={2} />
+      <Snackbar
+        open={openAlert}
+        autoHideDuration={4000}
+        onClose={handleClose}
+        anchorOrigin={{ vertical: "bottom", horizontal: "left" }}
+      >
+        <Alert onClose={handleClose} severity="error" sx={{ width: "100%" }}>
+          Terjadi error, silahkan coba lagi nanti
+        </Alert>
+      </Snackbar>
     </Box>
   );
 };

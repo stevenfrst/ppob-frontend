@@ -139,7 +139,9 @@ const BuyPulsa = () => {
             </Typography>
           </Box>
         )}
-        {currentUser ? (
+       
+      </Box>
+      {currentUser ? (
           <></>
         ) : (
           <CardActionArea
@@ -147,12 +149,15 @@ const BuyPulsa = () => {
             sx={{
               height: 70,
               width: 450,
+              margin:'auto',
               backgroundColor: "#113CFC",
               color: "white",
               padding: 3,
               display: "flex",
               alignItems: "center",
               bottom: 0,
+              right:0,
+              left:0,
               top: "auto",
               position: "sticky",
               marginTop: 3,
@@ -172,7 +177,6 @@ const BuyPulsa = () => {
             </Box>
           </CardActionArea>
         )}
-      </Box>
     </Box>
   );
 };

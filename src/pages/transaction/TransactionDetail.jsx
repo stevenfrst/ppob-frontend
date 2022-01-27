@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 
 import axios from "axios";
@@ -20,25 +20,58 @@ import {
   AccordionSummary,
   Box,
   Button,
+  CardActionArea,
+  CircularProgress,
+  Snackbar,
   Typography,
 } from "@mui/material";
 
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import { useNavigate } from "react-router-dom";
 import Header from "../../components/navigation/Header";
+import MuiAlert from "@mui/material/Alert";
+import { loginSuccess } from "../../redux/loginSlice";
+import Detail from "../../components/typography/Detail";
+import Text2 from "../../components/typography/Text2";
 
 const TransactionDetail = () => {
+  const [openAlert, setOpenAlert] = useState(false);
+  const Alert = React.forwardRef(function Alert(props, ref) {
+    return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />;
+  });
+
   const { orderIDPayment } = useSelector((state) => state.userLog);
   const { transactionData } = useSelector((state) => state.transaction);
   const { currentUser } = useSelector((state) => state.login);
-
+  
+  const [loading, setLoading] = useState(false);
+  const [voucher, setVoucher] = useState("");
+  const [error, setError] = useState("");
+  const idVoucher = transactionData?.data?.id % 100;
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
   function numberWithCommas(x) {
     return x?.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".");
   }
-
+  
+  useEffect(() => {
+    const getCustomer = async () => {
+      setLoading(true);
+      try {
+        const res = await axios.get(
+          `https://6141f3fb4d16670017ba2ac7.mockapi.io/api/v1/code_voucher/${idVoucher}`
+        );
+        setVoucher(res?.data);
+        setError("");
+        setLoading(false);
+      } catch (err) {
+        setError("Data Tidak Ditemukan");
+        setLoading(false);
+      }
+    };
+    getCustomer();
+  }, [idVoucher]);
   useEffect(() => {
     const getTransaction = async () => {
       dispatch(isFetchingTransaction(true));
@@ -52,12 +85,19 @@ const TransactionDetail = () => {
         dispatch(getTransactionData(res?.data));
         dispatch(isFetchingTransaction(false));
       } catch (err) {
-        dispatch(getTransactionFailure());
-        dispatch(isFetchingTransaction(false));
+        if (err?.response?.status === 403) {
+          dispatch(loginSuccess(null));
+          navigate("/tokenexpired");
+          dispatch(isFetchingTransaction(false));
+        } else {
+          setOpenAlert(true);
+          dispatch(getTransactionFailure());
+          dispatch(isFetchingTransaction(false));
+        }
       }
     };
     getTransaction();
-  }, [currentUser?.data?.token, dispatch, orderIDPayment]);
+  }, [currentUser?.data?.token, dispatch, orderIDPayment, navigate]);
 
   const newDate = moment.utc(transactionData?.data?.created_at);
   const localDate = moment(newDate).local().format("DD-MM-YYYY, h:mm:ss");
@@ -65,7 +105,14 @@ const TransactionDetail = () => {
   const handleNullID = () => {
     navigate("/");
   };
+  const handleClose = (event, reason) => {
+    if (reason === "clickaway") {
+      return;
+    }
 
+    setOpenAlert(false);
+  };
+  
   if (!orderIDPayment) {
     return (
       <Box>
@@ -118,156 +165,179 @@ const TransactionDetail = () => {
           <Box sx={{ marginBottom: 2 }}>&nbsp;</Box>
           <Box sx={{ marginBottom: 3 }}>
             <Text text="Detail Order" />
-
-            <Box
-              sx={{
-                margin: "auto",
-                marginTop: 2,
-                width: 400,
-                display: "flex",
-                alignItems: "center",
-              }}
-            >
-              <Box sx={{ width: 170, display: "flex" }}>
-                <Typography>Status Transaksi</Typography>
-                <Typography sx={{ marginLeft: "auto", fontWeight: "bold" }}>
-                  :
-                </Typography>
-              </Box>
-              {transactionData?.data?.transaction_status === "pending" ? (
-                <Box
-                  component="span"
-                  sx={{
-                    border: 1,
-
-                    padding: 0.5,
-                    borderStyle: "solid",
-                    backgroundColor: "#FF2929",
-                    color: "white",
-                    borderRadius: 2,
-                    marginLeft: "auto",
-                  }}
-                >
-                  <Typography>Sedang di Proses</Typography>
-                </Box>
-              ) : (
-                <Box
-                  component="span"
-                  sx={{
-                    border: 1,
-
-                    padding: 0.5,
-                    borderStyle: "solid",
-                    backgroundColor: "#113CFC",
-                    color: "white",
-                    borderRadius: 2,
-                    marginLeft: "auto",
-                  }}
-                >
-                  <Typography>Selesai</Typography>
-                </Box>
-              )}
-            </Box>
-            <Box
-              sx={{
-                margin: "auto",
-                marginTop: 2,
-                width: 400,
-                display: "flex",
-                alignItems: "center",
-              }}
-            >
-              <Box sx={{ width: 170, display: "flex" }}>
-                <Typography>Pembayaran Melalui</Typography>
-                <Typography sx={{ marginLeft: "auto", fontWeight: "bold" }}>
-                  :
-                </Typography>
-              </Box>
-
-              <Typography sx={{ marginLeft: "auto" }}>
-                VA {transactionData?.data?.provider?.toUpperCase()}
-              </Typography>
-            </Box>
-            <Box
-              sx={{
-                margin: "auto",
-                marginTop: 2,
-                width: 400,
-                display: "flex",
-                alignItems: "center",
-              }}
-            >
-              <Box sx={{ width: 170, display: "flex" }}>
-                <Typography>Total Pembayaran</Typography>
-                <Typography sx={{ marginLeft: "auto", fontWeight: "bold" }}>
-                  :
-                </Typography>
-              </Box>
-
-              <Typography sx={{ marginLeft: "auto", fontWeight: "bold" }}>
-                Rp{numberWithCommas(transactionData?.data?.total)},00
-              </Typography>
-            </Box>
-            <Box
-              sx={{
-                margin: "auto",
-                marginTop: 2,
-                width: 400,
-                display: "flex",
-                alignItems: "center",
-              }}
-            >
-              <Box sx={{ width: 170, display: "flex" }}>
-                <Typography>Waktu Order</Typography>
-                <Typography sx={{ marginLeft: "auto", fontWeight: "bold" }}>
-                  :
-                </Typography>
-              </Box>
-
-              <Typography sx={{ marginLeft: "auto" }}>{localDate}</Typography>
-            </Box>
-          </Box>
-          <Box>
-            <Text text="Voucher Detail" />
-            <Box
-              sx={{
-                marginTop: 2,
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-              }}
-            >
-              <img
-                src={transactionData?.data?.image_url}
-                alt="xl"
-                style={{ width: 50, height: 50, marginRight: "10px" }}
+            <Box sx={{ margin: 3 }}>
+              <Detail label="Order ID" value={transactionData?.data?.id} />
+              <Detail label="Kode Bayar" value={transactionData?.data?.link} />
+              <Detail
+                label="Nama Produk"
+                value={transactionData?.data?.product_name}
               />
-              <Typography variant="h5" sx={{ fontWeight: "bold" }}>
-                {transactionData?.data?.product_name}
-              </Typography>
+              <Detail
+                label="Harga"
+                value={`Rp${numberWithCommas(
+                  transactionData?.data?.total - transactionData?.data?.tax
+                )},00`}
+              />
+              <Detail
+                label="Tax"
+                value={`Rp${numberWithCommas(transactionData?.data?.tax)},00`}
+              />
+              <Detail
+                label="Diskon"
+                value={`Rp${numberWithCommas(
+                  transactionData?.data?.discount
+                )},00`}
+              />
+              <Detail
+                label="Total"
+                value={`Rp${numberWithCommas(transactionData?.data?.total)},00`}
+              />
+              <Detail
+                label="Status"
+                value={
+                  transactionData?.data?.transaction_status === "pending" ? (
+                    <Text2 text="Unpaid" unpaid={true} />
+                  ) : (
+                    <Text2 text="Paid" />
+                  )
+                }
+              />
+              <Detail label="Metode Pembayaran" value="Transfer Bank" />
+              <Detail
+                label="Provider"
+                value={transactionData?.data?.provider?.toUpperCase()}
+              />
+              <Box
+                sx={{
+                  width: 400,
+                  marginTop: 2,
+                  paddingBottom: 1,
+                  display: "flex",
+                }}
+              >
+                <Box sx={{ width: 150, display: "flex" }}>
+                  <Typography>Waktu Order</Typography>
+                  <Typography sx={{ marginLeft: "auto", fontWeight: "bold" }}>
+                    :
+                  </Typography>
+                </Box>
+                <Typography sx={{ marginLeft: "auto" }}>{localDate}</Typography>
+              </Box>
             </Box>
           </Box>
+          {transactionData?.data?.product_name?.startsWith("Voucher") ? (
+            <>
+              <Box>
+                <Text text="Voucher Detail" />
+                <Box
+                  sx={{
+                    marginTop: 2,
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                  }}
+                >
+                  <img
+                    src={transactionData?.data?.image_url}
+                    alt="xl"
+                    style={{ width: 50, height: 50, marginRight: "10px" }}
+                  />
+                  <Typography variant="h5" sx={{ fontWeight: "bold" }}>
+                    {transactionData?.data?.product_name}
+                  </Typography>
+                </Box>
+              </Box>
 
-          <Accordion
-            sx={{ marginTop: 3, backgroundColor: "#113CFC", color: "white" }}
-          >
-            <AccordionSummary
-              expandIcon={<ExpandMoreIcon sx={{ color: "white" }} />}
-              aria-controls="panel1a-content"
-              id="panel1a-header"
-            >
-              <Typography>Voucher Kamu</Typography>
-            </AccordionSummary>
-            <AccordionDetails>
-              <Typography>
-                Lorem ipsum dolor sit amet, consectetur adipiscing elit.
-                Suspendisse malesuada lacus ex, sit amet blandit leo lobortis
-                eget.
-              </Typography>
-            </AccordionDetails>
-          </Accordion>
+              <Accordion
+                disabled={
+                  transactionData?.data?.transaction_status === "pending"
+                }
+                sx={
+                  transactionData?.data?.transaction_status === "pending"
+                    ? {
+                        marginTop: 3,
+                        backgroundColor: "#113CFC",
+                        color: "black",
+                      }
+                    : {
+                        marginTop: 3,
+                        backgroundColor: "#113CFC",
+                        color: "white",
+                      }
+                }
+              >
+                <AccordionSummary
+                  expandIcon={<ExpandMoreIcon sx={{ color: "white" }} />}
+                  aria-controls="panel1a-content"
+                  id="panel1a-header"
+                >
+                  <Typography>Voucher Kamu</Typography>
+                </AccordionSummary>
+                <AccordionDetails>
+                  <Box
+                    sx={{ display: "flex", justifyContent: "space-between" }}
+                  >
+                    <Typography>Voucher Anda</Typography>
+                    <Typography>
+                      {loading ? (
+                        <CircularProgress />
+                      ) : error ? (
+                        "Tunggu beberapa saat lagi"
+                      ) : (
+                        voucher?.code
+                      )}
+                    </Typography>
+                  </Box>
+                </AccordionDetails>
+              </Accordion>
+            </>
+          ) : (
+            <></>
+          )}
         </Box>
+        <CardActionArea
+          onClick={() => navigate("/")}
+          sx={{
+            height: 70,
+            width: 450,
+            margin: "auto",
+            backgroundColor: "#113CFC",
+            color: "white",
+            padding: 3,
+            display: "flex",
+            alignItems: "center",
+            bottom: 0,
+            right: 0,
+            left: 0,
+            top: "auto",
+            position: "sticky",
+            marginTop: 3,
+          }}
+        >
+          <Box
+            sx={{
+              width: 300,
+              borderStyle: "solid",
+              borderColor: "white",
+              borderRadius: 5,
+              textAlign: "center",
+              padding: 1,
+            }}
+          >
+            <Typography>Kembali ke Home</Typography>
+          </Box>
+        </CardActionArea>
       </Box>
+      <Snackbar
+        open={openAlert}
+        autoHideDuration={4000}
+        onClose={handleClose}
+        anchorOrigin={{ vertical: "bottom", horizontal: "left" }}
+      >
+        <Alert onClose={handleClose} severity="error" sx={{ width: "100%" }}>
+          Terjadi error, silahkan coba lagi nanti
+        </Alert>
+      </Snackbar>
     </Box>
   );
 };

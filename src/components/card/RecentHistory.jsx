@@ -1,16 +1,4 @@
-import { useEffect, useState } from "react";
-import { useSelector } from "react-redux";
-
-import axios from "axios";
-
-import moment from "moment";
-
-import Text from "../../components/typography/Text";
-import Detail from "../typography/Detail";
-import Text2 from "../typography/Text2";
-
 import {
-  Avatar,
   Box,
   CardActionArea,
   CircularProgress,
@@ -18,28 +6,26 @@ import {
   Modal,
   Typography,
 } from "@mui/material";
-
-const HistoryCard = (props) => {
+import axios from "axios";
+import moment from "moment";
+import { useEffect, useState } from "react";
+import { useSelector } from "react-redux";
+import Detail from "../typography/Detail";
+import Text from "../typography/Text";
+import Text2 from "../typography/Text2";
+const RecentHistory = (props) => {
   const { listHistory } = props;
-
-  const { currentUser } = useSelector((state) => state.login);
-
-  const [open, setOpen] = useState(false);
-  const [history, setHistory] = useState("");
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState(false);
-
   function numberWithCommas(x) {
     return x?.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".");
   }
-  const totalPrice = numberWithCommas(listHistory?.total);
-
-  const date = moment(listHistory?.created_at).format("DD MMM YYYY");
+  const { currentUser } = useSelector((state) => state.login);
+  const [history, setHistory] = useState("");
+  const [open, setOpen] = useState(false);
   const newDate = moment.utc(listHistory?.created_at);
-  const localDate = moment(newDate).local().format("DD-MM-YYYY, h:mm:ss");
-
+  const localDate = moment(newDate).local().format("DD MMM YYYY");
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(false);
   const idVoucher = listHistory?.id % 100;
-  const [voucher, setVoucher] = useState("");
   const handleClick = () => {
     const getHistory = async () => {
       setLoading(true);
@@ -60,6 +46,7 @@ const HistoryCard = (props) => {
     getHistory();
     setOpen(true);
   };
+  const [voucher, setVoucher] = useState("");
   useEffect(() => {
     const getCustomer = async () => {
       setLoading(true);
@@ -77,36 +64,68 @@ const HistoryCard = (props) => {
     };
     getCustomer();
   }, [idVoucher]);
+
   return (
     <>
-      <Box
+      <CardActionArea
         sx={{
-          borderRadius: 3,
+          width: 400,
           display: "flex",
+          alignItems: "center",
+          marginRight: 3,
+          padding: 1,
         }}
+        onClick={() => handleClick()}
       >
-        <CardActionArea
+        <Box
           sx={{
-            padding: 1,
-            borderRadius: 3,
+            width: 80,
+            height: 80,
+            background: `url(${listHistory?.image_url})`,
+            backgroundRepeat: "no-repeat",
+            backgroundPosition: "center",
+            backgroundSize: "100%",
+            marginRight: 3,
           }}
-          onClick={() => handleClick()}
-        >
-          <Box sx={{ display: "flex", alignItems: "center" }}>
-            <Avatar
-              alt={listHistory?.product_name}
-              src={listHistory?.image_url}
-              sx={{ width: 50, height: 50, marginRight: 3 }}
-            ></Avatar>
-            <Box>
-              <Typography variant="h6" sx={{ fontWeight: "bold" }}>
-                Rp{totalPrice},00
-              </Typography>
-              <Typography variant="body">{date}</Typography>
+        ></Box>
+        <Box sx={{ display: "block" }}>
+          {listHistory?.transaction_status === "pending" ? (
+            <Box
+              component="span"
+              sx={{
+                backgroundColor: "#FF2929",
+                color: "white",
+                borderRadius: 3,
+                paddingLeft: 3,
+                paddingRight: 3,
+                paddingBottom: 0.3,
+                paddingTop: 0.3,
+              }}
+            >
+              Proses
             </Box>
-          </Box>
-        </CardActionArea>
-      </Box>
+          ) : (
+            <Box
+              component="span"
+              sx={{
+                backgroundColor: "#113CFC",
+                color: "white",
+                borderRadius: 3,
+                paddingLeft: 3,
+                paddingRight: 3,
+                paddingBottom: 0.3,
+                paddingTop: 0.3,
+              }}
+            >
+              Selesai
+            </Box>
+          )}
+          <Typography sx={{ marginTop: 1 }}>
+            Rp{numberWithCommas(listHistory?.total)},00
+          </Typography>
+          <Typography>{localDate}</Typography>
+        </Box>
+      </CardActionArea>
       <Modal open={open} onClose={() => setOpen(false)}>
         <Container
           sx={(theme) => ({
@@ -132,6 +151,7 @@ const HistoryCard = (props) => {
                 justifyContent: "center",
                 alignItems: "center",
                 height: 500,
+                overflow: "scroll",
               }}
             >
               <CircularProgress />
@@ -167,11 +187,22 @@ const HistoryCard = (props) => {
               )}
               <Detail
                 label="Harga"
-                value={history?.data?.total - history?.data?.tax}
+                value={`Rp${numberWithCommas(
+                  history?.data?.total - history?.data?.tax
+                )},00`}
               />
-              <Detail label="Tax" value={history?.data?.tax} />
-              <Detail label="Diskon" value={history?.data?.discount} />
-              <Detail label="Total" value={history?.data?.total} />
+              <Detail
+                label="Tax"
+                value={`Rp${numberWithCommas(history?.data?.tax)},00`}
+              />
+              <Detail
+                label="Diskon"
+                value={`Rp${numberWithCommas(history?.data?.discount)},00`}
+              />
+              <Detail
+                label="Total"
+                value={`Rp${numberWithCommas(history?.data?.total)},00`}
+              />
               <Detail
                 label="Status"
                 value={
@@ -211,4 +242,4 @@ const HistoryCard = (props) => {
   );
 };
 
-export default HistoryCard;
+export default RecentHistory;
