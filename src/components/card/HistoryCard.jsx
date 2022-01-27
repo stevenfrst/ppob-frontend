@@ -38,7 +38,7 @@ const HistoryCard = (props) => {
   const newDate = moment.utc(listHistory?.created_at);
   const localDate = moment(newDate).local().format("DD-MM-YYYY, h:mm:ss");
 
-  const idVoucher = listHistory?.id % 100;
+  const idVoucher = (listHistory?.id % 100)+1;
   const [voucher, setVoucher] = useState("");
   const handleClick = () => {
     const getHistory = async () => {

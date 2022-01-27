@@ -47,7 +47,7 @@ const TransactionDetail = () => {
   const [loading, setLoading] = useState(false);
   const [voucher, setVoucher] = useState("");
   const [error, setError] = useState("");
-  const idVoucher = transactionData?.data?.id % 100;
+  const idVoucher = (transactionData?.data?.id % 100)+1;
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
