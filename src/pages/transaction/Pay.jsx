@@ -12,6 +12,7 @@ import {
   Box,
   Button,
   CardActionArea,
+  CircularProgress,
   IconButton,
   Snackbar,
   Tooltip,
@@ -37,7 +38,7 @@ const Pay = () => {
   const { currentUser } = useSelector((state) => state.login);
   const { transactionData } = useSelector((state) => state.transaction);
   const { orderIDPayment } = useSelector((state) => state.userLog);
-
+  const {transactionFetch} = useSelector((state)=>state.transaction)
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
@@ -125,6 +126,8 @@ const Pay = () => {
     <Box>
       <Header></Header>
       <Box sx={{ width: 450, margin: "auto", marginTop: 15 }}>
+        {transactionFetch?<CircularProgress/>:
+        <>
         <Box>
           <Text text="Order ID" />
         </Box>
@@ -290,6 +293,7 @@ const Pay = () => {
             <Typography>Detail Transaksi</Typography>
           </Box>
         </CardActionArea>
+        </>}
       </Box>
       <Snackbar
         open={openAlert}

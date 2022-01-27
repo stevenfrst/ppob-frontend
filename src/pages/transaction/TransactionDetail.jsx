@@ -20,6 +20,8 @@ import {
   AccordionSummary,
   Box,
   Button,
+  CardActionArea,
+  CircularProgress,
   Snackbar,
   Typography,
 } from "@mui/material";
@@ -41,14 +43,35 @@ const TransactionDetail = () => {
   const { orderIDPayment } = useSelector((state) => state.userLog);
   const { transactionData } = useSelector((state) => state.transaction);
   const { currentUser } = useSelector((state) => state.login);
-
+  
+  const [loading, setLoading] = useState(false);
+  const [voucher, setVoucher] = useState("");
+  const [error, setError] = useState("");
+  const idVoucher = transactionData?.data?.id % 100;
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
   function numberWithCommas(x) {
     return x?.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".");
   }
-
+  
+  useEffect(() => {
+    const getCustomer = async () => {
+      setLoading(true);
+      try {
+        const res = await axios.get(
+          `https://6141f3fb4d16670017ba2ac7.mockapi.io/api/v1/code_voucher/${idVoucher}`
+        );
+        setVoucher(res?.data);
+        setError("");
+        setLoading(false);
+      } catch (err) {
+        setError("Data Tidak Ditemukan");
+        setLoading(false);
+      }
+    };
+    getCustomer();
+  }, [idVoucher]);
   useEffect(() => {
     const getTransaction = async () => {
       dispatch(isFetchingTransaction(true));
@@ -89,6 +112,7 @@ const TransactionDetail = () => {
 
     setOpenAlert(false);
   };
+  
   if (!orderIDPayment) {
     return (
       <Box>
@@ -225,11 +249,22 @@ const TransactionDetail = () => {
               </Box>
 
               <Accordion
-                sx={{
-                  marginTop: 3,
-                  backgroundColor: "#113CFC",
-                  color: "white",
-                }}
+                disabled={
+                  transactionData?.data?.transaction_status === "pending"
+                }
+                sx={
+                  transactionData?.data?.transaction_status === "pending"
+                    ? {
+                        marginTop: 3,
+                        backgroundColor: "#113CFC",
+                        color: "black",
+                      }
+                    : {
+                        marginTop: 3,
+                        backgroundColor: "#113CFC",
+                        color: "white",
+                      }
+                }
               >
                 <AccordionSummary
                   expandIcon={<ExpandMoreIcon sx={{ color: "white" }} />}
@@ -239,11 +274,20 @@ const TransactionDetail = () => {
                   <Typography>Voucher Kamu</Typography>
                 </AccordionSummary>
                 <AccordionDetails>
-                  <Typography>
-                    Lorem ipsum dolor sit amet, consectetur adipiscing elit.
-                    Suspendisse malesuada lacus ex, sit amet blandit leo
-                    lobortis eget.
-                  </Typography>
+                  <Box
+                    sx={{ display: "flex", justifyContent: "space-between" }}
+                  >
+                    <Typography>Voucher Anda</Typography>
+                    <Typography>
+                      {loading ? (
+                        <CircularProgress />
+                      ) : error ? (
+                        "Tunggu beberapa saat lagi"
+                      ) : (
+                        voucher?.code
+                      )}
+                    </Typography>
+                  </Box>
                 </AccordionDetails>
               </Accordion>
             </>
@@ -251,6 +295,38 @@ const TransactionDetail = () => {
             <></>
           )}
         </Box>
+        <CardActionArea
+          onClick={() => navigate("/")}
+          sx={{
+            height: 70,
+            width: 450,
+            margin: "auto",
+            backgroundColor: "#113CFC",
+            color: "white",
+            padding: 3,
+            display: "flex",
+            alignItems: "center",
+            bottom: 0,
+            right: 0,
+            left: 0,
+            top: "auto",
+            position: "sticky",
+            marginTop: 3,
+          }}
+        >
+          <Box
+            sx={{
+              width: 300,
+              borderStyle: "solid",
+              borderColor: "white",
+              borderRadius: 5,
+              textAlign: "center",
+              padding: 1,
+            }}
+          >
+            <Typography>Kembali ke Home</Typography>
+          </Box>
+        </CardActionArea>
       </Box>
       <Snackbar
         open={openAlert}
